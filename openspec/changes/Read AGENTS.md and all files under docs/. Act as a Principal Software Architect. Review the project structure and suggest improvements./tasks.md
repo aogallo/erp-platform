@@ -35,12 +35,12 @@ Chain strategy: stacked-to-main
 
 ## Phase 2: Customer + Invoice Technical Tasks
 
-- [ ] 2.1 Create `src/crm/{controllers,services,repositories,domain,schemas}/` for Customer flows from `openspec/specs/customer/spec.md` using `/crm/customers` routes.
-- [ ] 2.2 Create `src/sales/{controllers,services,repositories,domain,schemas}/` for Invoice flows from `openspec/specs/invoice/spec.md` using `/sales/invoices` routes.
-- [ ] 2.3 Define `src/shared/uow/` and repository ports for customer uniqueness, invoice posting, inventory/accounting coordination, and transaction rollback.
-- [ ] 2.4 Define `src/shared/outbox/` plus FEL event contracts for `posted_pending_fel`, `fel_authorized`, `fel_failed`, and `credited`.
-- [ ] 2.5 Define `src/shared/auth/` `AuthProvider` port with `fastapi-fullauth` adapter placeholder and OIDC migration notes.
-- [ ] 2.6 Create `src/shared/fel/` `FelProvider` port and Infile adapter skeleton; no synchronous FEL posting.
+- [x] 2.1 Create `src/crm/{controllers,services,repositories,domain,schemas}/` for Customer flows from `openspec/specs/customer/spec.md` using `/crm/customers` routes.
+- [x] 2.2 Create `src/sales/{controllers,services,repositories,domain,schemas}/` for Invoice flows from `openspec/specs/invoice/spec.md` using `/sales/invoices` routes.
+- [x] 2.3 Define `src/shared/uow/` and repository ports for customer uniqueness, invoice posting, inventory/accounting coordination, and transaction rollback.
+- [x] 2.4 Define `src/shared/outbox/` plus FEL event contracts for `posted_pending_fel`, `fel_authorized`, `fel_failed`, and `credited`.
+- [x] 2.5 Define `src/shared/auth/` `AuthProvider` port with `fastapi-fullauth` adapter placeholder and OIDC migration notes.
+- [x] 2.6 Create `src/shared/fel/` `FelProvider` port and Infile adapter skeleton; no synchronous FEL posting.
 
 ## Phase 3: Scaffolding, Tooling, and Verification
 

@@ -1,0 +1,1 @@
+"""Sales inbound adapter placeholders."""
