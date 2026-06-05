@@ -184,6 +184,7 @@ Entities:
 
 - Bank Account
 - Bank Movement
+- Bank Movement Concept
 - Check
 - Check Print Batch
 - Deposit
@@ -196,7 +197,9 @@ Entities:
 Responsibilities:
 
 - Record bank account movements, including checks, deposits, debit notes, credit notes, payments, and receipts.
+- Support movement capture by selected bank account and movement concept.
 - Manage check lifecycle, including issuance, voiding, and print batches.
+- Generate the accounting entry when a bank movement is saved and the movement requires posting.
 - Reconcile bank statements.
 - Coordinate settlement information with Accounting.
 
@@ -210,9 +213,13 @@ Relationships:
 Key Rules:
 
 - Banking owns operational movement history for bank accounts.
+- Bank movements MUST be classified by concept, such as check, debit note, credit note, deposit, transfer, fee, interest, or other configured concepts.
+- Saving a check, debit note, credit note, deposit, payment, or receipt SHOULD create the related accounting journal entry immediately through Accounting.
+- Accounting entries generated from Banking MUST keep a traceable reference to the source bank movement.
 - Checks MUST have a lifecycle (`draft`, `printed`, `issued`, `voided`, `cleared`) before reconciliation.
 - Printable checks MUST be generated from approved payment obligations and keep print audit history.
 - Debit notes, credit notes, deposits, payments, and receipts MUST produce accounting settlement events.
+- Bank reconciliation MUST compare imported/entered bank statement lines against recorded bank movements and their accounting status.
 
 ---
 
