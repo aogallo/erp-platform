@@ -2,7 +2,7 @@
 
 ## Mode
 
-Standard. Strict TDD is disabled in `openspec/config.yaml` and no test runner is configured.
+Standard for this docs-only slice. `openspec/config.yaml` now declares `strict_tdd: true` as the project policy. Test runners are not installed yet because the project is still in documentation/scaffolding; pytest, Ruff, and Pyright are planned for the tooling slice.
 
 ## Completed Tasks
 
