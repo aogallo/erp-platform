@@ -178,18 +178,25 @@ Relationships:
 
 Purpose:
 
-Manage bank accounts, payments, receipts, and reconciliation.
+Manage bank accounts, operational bank movements, checks, deposits, debit/credit notes, payments, receipts, and reconciliation.
 
 Entities:
 
 - Bank Account
+- Bank Movement
+- Check
+- Check Print Batch
+- Deposit
+- Bank Debit Note
+- Bank Credit Note
 - Payment
 - Receipt
 - Bank Reconciliation
 
 Responsibilities:
 
-- Record payments and receipts.
+- Record bank account movements, including checks, deposits, debit notes, credit notes, payments, and receipts.
+- Manage check lifecycle, including issuance, voiding, and print batches.
 - Reconcile bank statements.
 - Coordinate settlement information with Accounting.
 
@@ -199,6 +206,13 @@ Relationships:
 
 - Consumes receivable/payable obligations from Accounting.
 - Sends settlement and reconciliation results back to Accounting.
+
+Key Rules:
+
+- Banking owns operational movement history for bank accounts.
+- Checks MUST have a lifecycle (`draft`, `printed`, `issued`, `voided`, `cleared`) before reconciliation.
+- Printable checks MUST be generated from approved payment obligations and keep print audit history.
+- Debit notes, credit notes, deposits, payments, and receipts MUST produce accounting settlement events.
 
 ---
 
