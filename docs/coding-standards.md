@@ -28,6 +28,37 @@ src/{context}/
 
 The domain layer MUST NOT import FastAPI, SQLAlchemy sessions, Pydantic request models, or provider SDKs. Controllers call services; services coordinate repositories through a Unit of Work; repositories own database access.
 
+## Backend Model Boundaries
+
+Keep these three model types separate:
+
+```text
+Domain entity ≠ SQLAlchemy ORM model ≠ Pydantic schema
+```
+
+| Type | Purpose | Location | Depends on |
+|------|---------|----------|------------|
+| Domain entity | Business rules and domain state | `src/{context}/domain/` | Pure Python only |
+| SQLAlchemy ORM model | Table mapping and persistence concerns | `src/{context}/repositories/models.py` | SQLAlchemy |
+| Pydantic schema | HTTP request/response validation | `src/{context}/schemas/` | Pydantic |
+
+Flow:
+
+```text
+Controller
+  receives Pydantic schemas
+    ↓
+Service
+  works with domain entities and value objects
+    ↓
+Repository
+  maps domain entities ↔ SQLAlchemy ORM models
+    ↓
+Database
+```
+
+Repositories MAY define SQLAlchemy 2.x declarative models in `models.py` and persistence adapters in `sqlalchemy.py`. Controllers MUST return Pydantic response schemas, never SQLAlchemy ORM models.
+
 ## Patterns
 
 - Repository Pattern
