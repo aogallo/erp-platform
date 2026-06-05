@@ -37,12 +37,21 @@ The domain layer MUST NOT import FastAPI, SQLAlchemy sessions, Pydantic request 
 
 ## Requirements
 
+- `uv` is the backend environment and dependency manager.
+- `pyproject.toml` and `uv.lock` MUST be committed.
+- Backend commands MUST run through `uv run` in local development and CI.
+- Ruff is the formatter, linter, and import sorter.
+- Pyright is the default Python type checker; mypy MAY be added later if needed.
 - Type hints required
 - Pydantic v2 required
 - SQLAlchemy 2.x required
 - Async endpoints preferred
 - Unit tests required
 - Integration tests required
+- Request and response schemas SHOULD be explicit; SQLAlchemy models MUST NOT be returned directly from API routes.
+- Monetary values MUST use `Decimal`, never `float`.
+- Timestamps MUST use UTC.
+- Application configuration MUST use typed settings, not scattered `os.getenv()` calls.
 
 ## Forbidden
 
@@ -51,6 +60,9 @@ The domain layer MUST NOT import FastAPI, SQLAlchemy sessions, Pydantic request 
 - Circular dependencies
 - Cross-context writes without an application service and Unit of Work boundary
 - Provider SDK calls from domain objects
+- `session.commit()` outside Unit of Work boundaries
+- `requirements.txt` as the dependency source of truth
+- Returning ORM models directly from controllers
 
 ## Naming
 
@@ -77,16 +89,36 @@ Frontend features SHOULD mirror business capabilities and consume bounded-contex
 
 - Functional components only
 - TypeScript strict mode
-- React Query for server state
+- TanStack Query for server state
 - Zod for validation
+- Feature folders SHOULD use this structure:
+
+```text
+frontend/src/features/{feature}/
+  api/          # TanStack Query functions, query keys, mutations
+  components/   # Feature UI components
+  hooks/        # Feature-specific hooks
+  schemas/      # Zod schemas
+  types/        # TypeScript types
+```
+
+- Query keys MUST be centralized per feature.
+- Server state belongs in TanStack Query; local UI state belongs in React state.
+- Forms SHOULD validate through Zod schemas.
+- Components SHOULD expose accessible labels, semantic buttons, loading states, and error states.
+- Large components SHOULD be split into container and presentational components when behavior and rendering become hard to read.
 
 ## Forbidden
 
 - Class components
 - Any type without justification
+- Direct `fetch` or API client calls from React components
+- Duplicated query keys across files
+- Business workflow logic embedded in presentational components
 
 ## Naming
 
 - camelCase for variables
 - PascalCase for components
 - kebab-case for folders
+- `import type` SHOULD be used for type-only imports
