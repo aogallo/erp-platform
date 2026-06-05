@@ -25,7 +25,7 @@ class CustomerService(Protocol):
     ) -> CustomerRead:
         """Update mutable customer fields; tax IDs remain immutable."""
 
-    async def search_customers(self, query: CustomerSearch) -> Page:
+    async def search_customers(self, query: CustomerSearch) -> Page[CustomerRead]:
         """Search active customers by name, tax ID, or email."""
 
     async def disable_customer(self, customer_id: int) -> None:

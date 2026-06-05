@@ -5,6 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from src.crm.domain.customer import CustomerStatus
+from src.shared.pagination import Page
 
 
 @dataclass(frozen=True)
@@ -47,11 +48,3 @@ class CustomerRead:
     email: str | None
     phone: str | None
     status: CustomerStatus
-
-
-@dataclass(frozen=True)
-class Page:
-    items: tuple[CustomerRead, ...]
-    total: int
-    page: int
-    page_size: int

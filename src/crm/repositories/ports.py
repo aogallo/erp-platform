@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import Protocol
 
 from src.crm.domain.customer import Contact, Customer
+from src.shared.pagination import Page
 
 
 class CustomerRepository(Protocol):
@@ -31,8 +32,8 @@ class CustomerRepository(Protocol):
         include_disabled: bool = False,
         page: int = 1,
         page_size: int = 20,
-    ) -> tuple[list[Customer], int]:
-        """Return paginated customers and total count."""
+    ) -> Page[Customer]:
+        """Return a named paginated customer result."""
 
     async def add_contact(self, contact: Contact) -> Contact:
         """Attach a contact to a customer."""
