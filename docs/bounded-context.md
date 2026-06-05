@@ -206,7 +206,7 @@ Relationships:
 
 Purpose:
 
-Manage employees, contracts, payroll inputs, and organizational assignments.
+Manage employees, contracts, payroll inputs, deductions, bonuses, suspensions, and organizational assignments.
 
 Entities:
 
@@ -214,10 +214,18 @@ Entities:
 - Contract
 - Department
 - Payroll Period
+- Payroll Run
+- Deduction Catalog
+- Bonus
+- Suspension
 
 Responsibilities:
 
 - Maintain employee records.
+- Maintain employment contracts and compensation terms used to calculate payroll.
+- Manage payroll runs based on contract terms, bonuses, legal deductions, recurring deductions, and suspensions.
+- Maintain a deduction catalog with frequency, legal basis, applicability, and calculation method.
+- Record employee bonuses, allowances, absences, and suspensions that affect payroll.
 - Provide payroll and expense obligations to Accounting.
 - Manage role-independent organizational data.
 
@@ -226,7 +234,14 @@ API prefix: `/hr`
 Relationships:
 
 - Uses IAM identities when employees also access the system.
-- Sends payroll accounting data to Accounting.
+- Sends approved payroll accounting data to Accounting.
+
+Key Rules:
+
+- Payroll MUST be generated from approved employee contracts and payroll-period inputs.
+- Legal deductions and recurring deductions MUST come from the deduction catalog, not hard-coded payroll logic.
+- Suspensions, absences, and bonuses MUST be explicit payroll inputs with audit history.
+- Accounting receives approved payroll obligations; HR owns payroll calculation inputs and employee compensation records.
 
 ---
 
