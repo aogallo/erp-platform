@@ -1,0 +1,11 @@
+"""Route contract for Sales invoice endpoints."""
+
+INVOICE_ROUTE_PREFIX = "/sales/invoices"
+
+CREATE_INVOICE_ROUTE = INVOICE_ROUTE_PREFIX
+QUERY_INVOICES_ROUTE = INVOICE_ROUTE_PREFIX
+UPDATE_INVOICE_ROUTE = f"{INVOICE_ROUTE_PREFIX}/{{invoice_id}}"
+DELETE_INVOICE_ROUTE = f"{INVOICE_ROUTE_PREFIX}/{{invoice_id}}"
+POST_INVOICE_ROUTE = f"{INVOICE_ROUTE_PREFIX}/{{invoice_id}}/post"
+CREDIT_NOTE_ROUTE = f"{INVOICE_ROUTE_PREFIX}/{{invoice_id}}/credit-note"
+FEL_RETRY_ROUTE = f"{INVOICE_ROUTE_PREFIX}/{{invoice_id}}/fel-retry"
