@@ -1,0 +1,1 @@
+export { CustomerListPlaceholder } from './CustomerListPlaceholder'

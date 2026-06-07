@@ -35,17 +35,17 @@ Chain strategy: stacked-to-main
 
 ## Phase 2: Customer + Invoice Technical Tasks
 
-- [x] 2.1 Create `src/crm/{controllers,services,repositories,domain,schemas}/` for Customer flows from `openspec/specs/customer/spec.md` using `/crm/customers` routes.
-- [x] 2.2 Create `src/sales/{controllers,services,repositories,domain,schemas}/` for Invoice flows from `openspec/specs/invoice/spec.md` using `/sales/invoices` routes.
-- [x] 2.3 Define `src/shared/uow/` and repository ports for customer uniqueness, invoice posting, inventory/accounting coordination, and transaction rollback.
-- [x] 2.4 Define `src/shared/outbox/` plus FEL event contracts for `posted_pending_fel`, `fel_authorized`, `fel_failed`, and `credited`.
-- [x] 2.5 Define `src/shared/auth/` `AuthProvider` port with `fastapi-fullauth` adapter placeholder and OIDC migration notes.
-- [x] 2.6 Create `src/shared/fel/` `FelProvider` port and Infile adapter skeleton; no synchronous FEL posting.
+- [x] 2.1 Create `backend/src/crm/{controllers,services,repositories,domain,schemas}/` for Customer flows from `openspec/specs/customer/spec.md` using `/crm/customers` routes.
+- [x] 2.2 Create `backend/src/sales/{controllers,services,repositories,domain,schemas}/` for Invoice flows from `openspec/specs/invoice/spec.md` using `/sales/invoices` routes.
+- [x] 2.3 Define `backend/src/shared/uow/` and repository ports for customer uniqueness, invoice posting, inventory/accounting coordination, and transaction rollback.
+- [x] 2.4 Define `backend/src/shared/outbox/` plus FEL event contracts for `posted_pending_fel`, `fel_authorized`, `fel_failed`, and `credited`.
+- [x] 2.5 Define `backend/src/shared/auth/` `AuthProvider` port with `fastapi-fullauth` adapter placeholder and OIDC migration notes.
+- [x] 2.6 Create `backend/src/shared/fel/` `FelProvider` port and Infile adapter skeleton; no synchronous FEL posting.
 
 ## Phase 3: Scaffolding, Tooling, and Verification
 
-- [ ] 3.1 Create backend package skeleton under `src/` with `main.py`, `shared/config/`, dependency wiring, and empty FastAPI routers.
-- [ ] 3.2 Create `frontend/` Vite React TypeScript structure with `frontend/src/features/{customers,invoices}/{components,hooks,types,api}/`.
+- [ ] 3.1 Create backend package skeleton under `backend/src/` with `main.py`, `shared/config/`, dependency wiring, and empty FastAPI routers.
+- [x] 3.2 Create `frontend/` Vite React TypeScript structure with `frontend/src/features/{customers,invoices}/{components,hooks,types,api}/`.
 - [ ] 3.3 Add `docker-compose.yml` for PostgreSQL and environment variables consumed by backend config.
 - [ ] 3.4 Add `migrations/sql/V1__base_schema.sql` for customers, contacts, invoices, invoice_lines, outbox, and auth seeds.
 - [ ] 3.5 Add pytest/pytest-asyncio no-op tests for backend import, UoW contract, and route registration.

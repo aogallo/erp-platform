@@ -44,8 +44,8 @@ POST /sales/invoices/{id}/post
 | `docs/adr/ADR-001-hexagonal-ddd.md` | Create | Record architecture decision and rejected alternatives. |
 | `docs/cross-cutting/{unit-of-work,error-handling,logging,auth,fel,multi-tenancy}.md` | Create | Define shared concerns before module coding. |
 | `AGENTS.md` | Modify | Point bounded contexts to canonical doc and include IAM/CRM. |
-| `src/{iam,crm,sales,inventory,purchasing,accounting,banking,hr}/` | Create | Each context gets `controllers/`, `services/`, `repositories/`, `domain/`, `schemas/`. |
-| `src/shared/{uow,outbox,errors,logging,auth,config}/` | Create | Cross-cutting ports and adapters. |
+| `backend/src/{iam,crm,sales,inventory,purchasing,accounting,banking,hr}/` | Create | Each context gets `controllers/`, `services/`, `repositories/`, `domain/`, `schemas/`. |
+| `backend/src/shared/{uow,outbox,errors,logging,auth,config}/` | Create | Cross-cutting ports and adapters. |
 | `frontend/src/features/{customers,invoices}/` | Create | `components/`, `hooks/`, `types/`, `api/` using TanStack Query. |
 | `migrations/sql/V1__base_schema.sql` | Create | Base tables: customers, contacts, invoices, invoice_lines, outbox, auth seeds. |
 | `docker-compose.yml`, `.github/workflows/ci.yml` | Create | PostgreSQL and CI for lint/type/test. |

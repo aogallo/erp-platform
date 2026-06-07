@@ -34,14 +34,14 @@ Read these before designing or implementing features:
 ## Backend Structure
 
 ```text
-src/{context}/
+backend/src/{context}/
   controllers/    # FastAPI routers and HTTP schemas
   services/       # Application services and orchestration
   repositories/   # SQLAlchemy data access adapters
   domain/         # Entities, value objects, domain events, domain services
   schemas/        # Pydantic request/response models
 
-src/shared/
+backend/src/shared/
   auth/
   config/
   errors/
