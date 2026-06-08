@@ -27,7 +27,7 @@ None — all existing spec files under `docs/modules/` are empty placeholders, n
 
 **P1 — Architecture Foundation**: Edit `coding-standards.md` (drop Vertical Slice, keep Hexagonal + DDD). Rewrite `bounded-context.md` (8 contexts: IAM, CRM, Sales, Inventory, Purchasing, Accounting, Banking, HR + relationships). Write ADR-001. Update `AGENTS.md`. Write cross-cutting concern docs/ADRs.
 
-Backend feature folders (`src/{bounded-context}/`):
+Backend feature folders (`backend/src/{bounded-context}/`):
 - `controllers/` — FastAPI routers + request/response schemas
 - `services/` — Business logic, orchestration
 - `repositories/` — SQLAlchemy data access
@@ -63,7 +63,7 @@ Shared kernel: auth middleware, Unit of Work, Transactional Outbox, error handli
 | `AGENTS.md` | Modified | Update bounded context list |
 | `openspec/specs/customer/spec.md` | New | Customer module spec |
 | `openspec/specs/invoice/spec.md` | New | Invoice module spec |
-| `src/`, `frontend/` | New | Project structure |
+| `backend/src/`, `frontend/` | New | Project structure |
 | `docker-compose.yml` | New | Local PostgreSQL |
 | `.github/workflows/ci.yml` | New | CI pipeline |
 | `migrations/` | New | Flyway base |

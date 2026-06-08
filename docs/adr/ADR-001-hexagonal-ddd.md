@@ -15,7 +15,7 @@ Use Hexagonal Architecture with Domain-Driven Design, organized by bounded-conte
 Each backend context uses:
 
 ```text
-src/{context}/controllers|services|repositories|domain|schemas
+backend/src/{context}/controllers|services|repositories|domain|schemas
 ```
 
 Controllers are inbound adapters, repositories are outbound adapters, services coordinate use cases, and domain objects hold business rules. Cross-cutting concerns live behind ports/adapters and are documented under `docs/cross-cutting/`.

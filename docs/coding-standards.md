@@ -18,7 +18,7 @@ Framework: FastAPI
 Backend code MUST be organized by canonical bounded context, not by technical layer alone:
 
 ```text
-src/{context}/
+backend/src/{context}/
   controllers/    # FastAPI inbound adapters and HTTP schemas
   services/       # Application services and orchestration
   repositories/   # SQLAlchemy outbound adapters
@@ -38,9 +38,9 @@ Domain entity ≠ SQLAlchemy ORM model ≠ Pydantic schema
 
 | Type | Purpose | Location | Depends on |
 |------|---------|----------|------------|
-| Domain entity | Business rules and domain state | `src/{context}/domain/` | Pure Python only |
-| SQLAlchemy ORM model | Table mapping and persistence concerns | `src/{context}/repositories/models.py` | SQLAlchemy |
-| Pydantic schema | HTTP request/response validation | `src/{context}/schemas/` | Pydantic |
+| Domain entity | Business rules and domain state | `backend/src/{context}/domain/` | Pure Python only |
+| SQLAlchemy ORM model | Table mapping and persistence concerns | `backend/src/{context}/repositories/models.py` | SQLAlchemy |
+| Pydantic schema | HTTP request/response validation | `backend/src/{context}/schemas/` | Pydantic |
 
 Flow:
 
@@ -65,6 +65,13 @@ Repositories MAY define SQLAlchemy 2.x declarative models in `models.py` and per
 - Service Pattern
 - Unit of Work Pattern
 - Dependency Injection
+
+## Shared Types
+
+- Paginated application results MUST use `backend/src/shared/pagination.py::Page[T]`.
+- Bounded contexts MUST NOT define their own `Page` or pagination response clones.
+- Context services SHOULD type paginated results explicitly, for example `Page[InvoiceRead]`.
+- HTTP response schemas MAY add transport-specific aliases such as `pageSize`, but those aliases belong at the HTTP boundary, not in context-local pagination types.
 
 ## Requirements
 
