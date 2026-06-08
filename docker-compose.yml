@@ -3,13 +3,13 @@ services:
     image: postgres:17-alpine
     container_name: erp-postgres
     environment:
-      POSTGRES_DB: ${ERP_DATABASE_NAME:-erp}
+      POSTGRES_DB: ${ERP_DATABASE_NAME:-erp_platform_dev}
       POSTGRES_USER: ${ERP_DATABASE_USER:-erp}
       POSTGRES_PASSWORD: ${ERP_DATABASE_PASSWORD:-erp_dev_password}
     ports:
       - "${ERP_DATABASE_PORT:-5432}:5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${ERP_DATABASE_USER:-erp} -d ${ERP_DATABASE_NAME:-erp}"]
+      test: ["CMD-SHELL", "pg_isready -U ${ERP_DATABASE_USER:-erp} -d ${ERP_DATABASE_NAME:-erp_platform_dev}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -22,7 +22,7 @@ services:
       postgres:
         condition: service_healthy
     command:
-      - -url=jdbc:postgresql://postgres:5432/${ERP_DATABASE_NAME:-erp}
+      - -url=jdbc:postgresql://postgres:5432/${ERP_DATABASE_NAME:-erp_platform_dev}
       - -user=${ERP_DATABASE_USER:-erp}
       - -password=${ERP_DATABASE_PASSWORD:-erp_dev_password}
       - -locations=filesystem:/flyway/sql
