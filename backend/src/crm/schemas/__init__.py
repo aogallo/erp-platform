@@ -6,7 +6,6 @@ from crm.schemas.customer import (
     CustomerRead,
     CustomerSearch,
     CustomerUpdate,
-    Page,
 )
 
 __all__ = [
@@ -15,5 +14,4 @@ __all__ = [
     "CustomerRead",
     "CustomerSearch",
     "CustomerUpdate",
-    "Page",
 ]

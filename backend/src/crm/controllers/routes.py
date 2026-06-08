@@ -1,10 +1,6 @@
-"""Route contract for CRM customer endpoints.
+"""Route contract and empty FastAPI router for CRM customer endpoints."""
 
-FastAPI routers are intentionally not created in this PR because backend tooling
-and dependencies are scheduled for a later scaffold slice. These constants keep
-the route ownership explicit and import-safe with only the Python standard
-library available.
-"""
+from fastapi import APIRouter, HTTPException
 
 CUSTOMER_ROUTE_PREFIX = "/crm/customers"
 
@@ -16,3 +12,14 @@ ADD_CUSTOMER_CONTACT_ROUTE = f"{CUSTOMER_ROUTE_PREFIX}/{{customer_id}}/contacts"
 REMOVE_CUSTOMER_CONTACT_ROUTE = (
     f"{CUSTOMER_ROUTE_PREFIX}/{{customer_id}}/contacts/{{contact_id}}"
 )
+
+router = APIRouter(prefix=CUSTOMER_ROUTE_PREFIX, tags=["crm-customers"])
+
+
+@router.get("")
+async def search_customers_scaffold() -> None:
+    """Expose the CRM customer route while the feature implementation is pending."""
+    raise HTTPException(
+        status_code=501,
+        detail="CRM customer endpoint scaffold is registered but not implemented.",
+    )
