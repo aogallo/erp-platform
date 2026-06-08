@@ -3,14 +3,15 @@
 from __future__ import annotations
 
 from typing import Protocol
+
 from sales.schemas.invoice import (
     CreditNoteCreate,
     InvoiceCreate,
     InvoiceQuery,
     InvoiceRead,
     InvoiceUpdate,
-    Page,
 )
+from shared.pagination import Page
 
 
 class InvoiceService(Protocol):
@@ -38,5 +39,5 @@ class InvoiceService(Protocol):
     async def retry_fel_authorization(self, invoice_id: int) -> None:
         """Queue a new FEL authorization attempt without duplicating posting."""
 
-    async def query_invoices(self, query: InvoiceQuery) -> Page:
+    async def query_invoices(self, query: InvoiceQuery) -> Page[InvoiceRead]:
         """Search invoices by number, date range, customer, or status."""

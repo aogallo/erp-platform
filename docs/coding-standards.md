@@ -66,6 +66,13 @@ Repositories MAY define SQLAlchemy 2.x declarative models in `models.py` and per
 - Unit of Work Pattern
 - Dependency Injection
 
+## Shared Types
+
+- Paginated application results MUST use `backend/src/shared/pagination.py::Page[T]`.
+- Bounded contexts MUST NOT define their own `Page` or pagination response clones.
+- Context services SHOULD type paginated results explicitly, for example `Page[InvoiceRead]`.
+- HTTP response schemas MAY add transport-specific aliases such as `pageSize`, but those aliases belong at the HTTP boundary, not in context-local pagination types.
+
 ## Requirements
 
 - `uv` is the backend environment and dependency manager.

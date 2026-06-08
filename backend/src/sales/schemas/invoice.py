@@ -50,11 +50,3 @@ class InvoiceRead:
     total: Decimal
     fel_uuid: str | None = None
     fel_document_number: str | None = None
-
-
-@dataclass(frozen=True)
-class Page:
-    items: tuple[InvoiceRead, ...]
-    total: int
-    page: int
-    page_size: int

@@ -7,7 +7,6 @@ from sales.schemas.invoice import (
     InvoiceQuery,
     InvoiceRead,
     InvoiceUpdate,
-    Page,
 )
 
 __all__ = [
@@ -17,5 +16,4 @@ __all__ = [
     "InvoiceQuery",
     "InvoiceRead",
     "InvoiceUpdate",
-    "Page",
 ]
