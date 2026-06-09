@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-import os
-from dataclasses import dataclass
 from functools import lru_cache
+
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 DEFAULT_APP_NAME = "ERP Platform API"
@@ -16,9 +16,16 @@ DEFAULT_DATABASE_USER = "erp"
 DEFAULT_DATABASE_PASSWORD = "erp_dev_password"
 
 
-@dataclass(frozen=True, slots=True)
-class Settings:
+class Settings(BaseSettings):
     """Runtime configuration consumed by backend wiring."""
+
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        env_prefix="ERP_",
+        extra="ignore",
+        frozen=True,
+    )
 
     app_name: str = DEFAULT_APP_NAME
     app_version: str = DEFAULT_APP_VERSION
@@ -30,20 +37,8 @@ class Settings:
 
     @classmethod
     def from_env(cls) -> Settings:
-        """Build settings from the process environment."""
-        return cls(
-            app_name=os.environ.get("ERP_APP_NAME", DEFAULT_APP_NAME),
-            app_version=os.environ.get("ERP_APP_VERSION", DEFAULT_APP_VERSION),
-            database_host=os.environ.get("ERP_DATABASE_HOST", DEFAULT_DATABASE_HOST),
-            database_port=int(
-                os.environ.get("ERP_DATABASE_PORT", DEFAULT_DATABASE_PORT)
-            ),
-            database_name=os.environ.get("ERP_DATABASE_NAME", DEFAULT_DATABASE_NAME),
-            database_user=os.environ.get("ERP_DATABASE_USER", DEFAULT_DATABASE_USER),
-            database_password=os.environ.get(
-                "ERP_DATABASE_PASSWORD", DEFAULT_DATABASE_PASSWORD
-            ),
-        )
+        """Build settings from process environment and local `.env` fallback."""
+        return cls()
 
     @property
     def database_url(self) -> str:

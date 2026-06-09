@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from main import create_app
 from pytest import MonkeyPatch
 from fastapi.testclient import TestClient
@@ -41,3 +43,25 @@ def test_backend_settings_read_postgres_environment(monkeypatch: MonkeyPatch) ->
         "postgresql+psycopg://erp_user:secret@db:5433/erp_test"
     )
     assert get_settings().app_name == "ERP Platform API"
+
+
+def test_backend_settings_load_dotenv_file(
+    tmp_path: Path, monkeypatch: MonkeyPatch
+) -> None:
+    env_file = tmp_path / ".env"
+    env_file.write_text(
+        "ERP_DATABASE_HOST=dotenv-db\n"
+        "ERP_DATABASE_PORT=5440\n"
+        "ERP_DATABASE_NAME=erp_platform_test\n"
+        "ERP_DATABASE_USER=dotenv_user\n"
+        "ERP_DATABASE_PASSWORD=dotenv_secret\n",
+        encoding="utf-8",
+    )
+    monkeypatch.chdir(tmp_path)
+
+    settings = Settings.from_env()
+
+    assert settings.database_url == (
+        "postgresql+psycopg://dotenv_user:dotenv_secret"
+        "@dotenv-db:5440/erp_platform_test"
+    )
