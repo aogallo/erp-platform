@@ -54,5 +54,5 @@ Chain strategy: stacked-to-main
 
 ## Phase 4: Deferred Follow-up Specs
 
-- [ ] 4.1 Create a follow-up OpenSpec change for Inventory, Accounting, Purchasing, HR, Banking, Sales, and IAM detailed specs.
-- [ ] 4.2 Keep current apply limited to foundation/scaffold; do not implement full business logic beyond contract skeletons.
+- [x] 4.1 Create a follow-up OpenSpec change for Inventory, Accounting, Purchasing, HR, Banking, Sales, and IAM detailed specs.
+- [x] 4.2 Keep current apply limited to foundation/scaffold; do not implement full business logic beyond contract skeletons.

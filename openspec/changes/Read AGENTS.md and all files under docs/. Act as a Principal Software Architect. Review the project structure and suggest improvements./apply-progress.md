@@ -24,6 +24,8 @@ PRs 1-3 used Standard Mode because dependency manifests and test runners were no
 - [x] 3.5 Added backend pytest/pytest-asyncio scaffold tests for imports, UoW contract, route registration, and config.
 - [x] 3.6 Added Vitest/React Testing Library scaffold tests for customer and invoice feature modules.
 - [x] 3.7 Added GitHub Actions CI for backend and frontend lint/type/test commands.
+- [x] 4.1 Created `openspec/changes/defer-detailed-module-specs/` as the follow-up OpenSpec change for Inventory, Accounting, Purchasing, HR, Banking, Sales, and IAM detailed specs.
+- [x] 4.2 Kept this apply limited to planning/foundation artifacts; no business logic, executable behavior, migrations, or detailed module specs were added in this slice.
 
 ## Files Changed in PR 2
 
@@ -85,8 +87,8 @@ None for the assigned PR 2 slice. FastAPI/Pydantic/SQLAlchemy classes were inten
 - [x] 3.5 Add pytest/pytest-asyncio no-op tests for backend import, UoW contract, and route registration.
 - [x] 3.6 Add Vitest/React Testing Library no-op tests for customer and invoice feature modules.
 - [x] 3.7 Add `.github/workflows/ci.yml` running lint/type/test placeholders for backend and frontend.
-- [ ] 4.1 Create a follow-up OpenSpec change for Inventory, Accounting, Purchasing, HR, Banking, Sales, and IAM detailed specs.
-- [ ] 4.2 Keep current apply limited to foundation/scaffold; do not implement full business logic beyond contract skeletons.
+- [x] 4.1 Create a follow-up OpenSpec change for Inventory, Accounting, Purchasing, HR, Banking, Sales, and IAM detailed specs.
+- [x] 4.2 Keep current apply limited to foundation/scaffold; do not implement full business logic beyond contract skeletons.
 
 ## Files Changed in PR 4
 
@@ -144,3 +146,25 @@ None for the assigned PR 2 slice. FastAPI/Pydantic/SQLAlchemy classes were inten
 - `npm test` → 2 files / 4 tests passed.
 - `docker compose config` → passed.
 - `docker compose up -d postgres && docker compose run --rm flyway` → blocked locally by unavailable Docker daemon; CI has the runnable Flyway validation path.
+
+## Phase 4 Completion
+
+### Files Changed in Phase 4
+
+- `openspec/changes/defer-detailed-module-specs/proposal.md` — follow-up OpenSpec proposal for deferred module specs.
+- `openspec/changes/defer-detailed-module-specs/design.md` — spec-authoring boundaries and planned spec paths.
+- `openspec/changes/defer-detailed-module-specs/tasks.md` — review-budget-aware task plan for the deferred detailed specs.
+- `openspec/changes/Read AGENTS.md and all files under docs/. Act as a Principal Software Architect. Review the project structure and suggest improvements./tasks.md` — marked tasks 4.1 and 4.2 complete.
+- `openspec/changes/Read AGENTS.md and all files under docs/. Act as a Principal Software Architect. Review the project structure and suggest improvements./apply-progress.md` — merged prior progress and recorded Phase 4 completion.
+
+### TDD Cycle Evidence
+
+| Task | Test File | Layer | Safety Net | RED | GREEN | TRIANGULATE | REFACTOR |
+|------|-----------|-------|------------|-----|-------|-------------|----------|
+| 4.1 | N/A | Planning/docs | N/A — OpenSpec planning artifact only | N/A — no executable behavior added | N/A — artifacts created and re-read | N/A — no runtime behavior | N/A |
+| 4.2 | N/A | Planning/docs | N/A — scope boundary documentation only | N/A — no executable behavior added | N/A — no business logic or detailed specs added | N/A — no runtime behavior | N/A |
+
+### Verification
+
+- Re-read the updated foundation `tasks.md` and confirmed 4.1 and 4.2 are checked.
+- Re-read the new follow-up `proposal.md`, `design.md`, and `tasks.md` to confirm the change plans deferred detailed specs without implementing business logic.
