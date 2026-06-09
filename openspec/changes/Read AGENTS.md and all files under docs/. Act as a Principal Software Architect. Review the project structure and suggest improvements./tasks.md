@@ -44,13 +44,13 @@ Chain strategy: stacked-to-main
 
 ## Phase 3: Scaffolding, Tooling, and Verification
 
-- [ ] 3.1 Create backend package skeleton under `backend/src/` with `main.py`, `shared/config/`, dependency wiring, and empty FastAPI routers.
+- [x] 3.1 Create backend package skeleton under `backend/src/` with `main.py`, `shared/config/`, dependency wiring, and empty FastAPI routers.
 - [x] 3.2 Create `frontend/` Vite React TypeScript structure with `frontend/src/features/{customers,invoices}/{components,hooks,types,api}/`.
-- [ ] 3.3 Add `docker-compose.yml` for PostgreSQL and environment variables consumed by backend config.
-- [ ] 3.4 Add `migrations/sql/V1__base_schema.sql` for customers, contacts, invoices, invoice_lines, outbox, and auth seeds.
-- [ ] 3.5 Add pytest/pytest-asyncio no-op tests for backend import, UoW contract, and route registration.
-- [ ] 3.6 Add Vitest/React Testing Library no-op tests for customer and invoice feature modules.
-- [ ] 3.7 Add `.github/workflows/ci.yml` running lint/type/test placeholders for backend and frontend.
+- [x] 3.3 Add `docker-compose.yml` for PostgreSQL and environment variables consumed by backend config.
+- [x] 3.4 Add `migrations/sql/V1__base_schema.sql` for customers, contacts, invoices, invoice_lines, outbox, and auth seeds.
+- [x] 3.5 Add pytest/pytest-asyncio no-op tests for backend import, UoW contract, and route registration.
+- [x] 3.6 Add Vitest/React Testing Library no-op tests for customer and invoice feature modules.
+- [x] 3.7 Add `.github/workflows/ci.yml` running lint/type/test placeholders for backend and frontend.
 
 ## Phase 4: Deferred Follow-up Specs
 

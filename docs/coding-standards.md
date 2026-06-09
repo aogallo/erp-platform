@@ -78,6 +78,8 @@ Repositories MAY define SQLAlchemy 2.x declarative models in `models.py` and per
 - `uv` is the backend environment and dependency manager.
 - `pyproject.toml` and `uv.lock` MUST be committed.
 - Backend commands MUST run through `uv run` in local development and CI.
+- Backend runtime configuration MUST use `pydantic-settings` with typed settings, `ERP_` environment variable prefix, and local `.env` fallback for development.
+- `.env` MUST NOT be committed; `.env.example` MUST document safe development defaults.
 - Ruff is the formatter, linter, and import sorter.
 - Pyright is the default Python type checker; mypy MAY be added later if needed.
 - Type hints required
@@ -89,7 +91,7 @@ Repositories MAY define SQLAlchemy 2.x declarative models in `models.py` and per
 - Request and response schemas SHOULD be explicit; SQLAlchemy models MUST NOT be returned directly from API routes.
 - Monetary values MUST use `Decimal`, never `float`.
 - Timestamps MUST use UTC.
-- Application configuration MUST use typed settings, not scattered `os.getenv()` calls.
+- Application configuration MUST use the shared typed settings module, not scattered environment reads.
 
 ## Forbidden
 

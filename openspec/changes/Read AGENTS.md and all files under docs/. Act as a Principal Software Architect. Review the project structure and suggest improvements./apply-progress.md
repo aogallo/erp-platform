@@ -2,7 +2,7 @@
 
 ## Mode
 
-Standard for the current chained PR slices. `openspec/config.yaml` declares `strict_tdd: true` as the project policy, but test runners are not installed yet because backend tooling is planned for a later slice. Pytest, Ruff, and Pyright remain planned for the tooling slice; this PR keeps code import-safe with the Python standard library only.
+PRs 1-3 used Standard Mode because dependency manifests and test runners were not installed yet. PR4 runs in Strict TDD Mode where possible by creating the runner/tooling harness first; tasks that create the runner itself have documented non-runnable RED states before dependencies existed.
 
 ## Completed Tasks
 
@@ -17,6 +17,13 @@ Standard for the current chained PR slices. `openspec/config.yaml` declares `str
 - [x] 2.4 Defined `backend/src/shared/outbox/` and FEL lifecycle event contracts for `posted_pending_fel`, `fel_authorized`, `fel_failed`, and `credited`.
 - [x] 2.5 Defined `backend/src/shared/auth/` `AuthProvider`, `Principal`, a `fastapi-fullauth` adapter placeholder, and OIDC migration notes.
 - [x] 2.6 Created `backend/src/shared/fel/` `FelProvider`, `FelResult`, and an Infile adapter skeleton that is explicitly asynchronous/outbox-driven.
+- [x] 3.1 Created backend FastAPI application factory, typed config, dependency wiring, and empty CRM/Sales routers.
+- [x] 3.2 Created `frontend/` Vite React TypeScript structure with customer and invoice feature modules.
+- [x] 3.3 Added Docker Compose PostgreSQL service and `.env.example` variables consumed by backend config.
+- [x] 3.4 Added Flyway base SQL migration for tenants, auth seeds, customers, contacts, invoices, invoice lines, and outbox.
+- [x] 3.5 Added backend pytest/pytest-asyncio scaffold tests for imports, UoW contract, route registration, and config.
+- [x] 3.6 Added Vitest/React Testing Library scaffold tests for customer and invoice feature modules.
+- [x] 3.7 Added GitHub Actions CI for backend and frontend lint/type/test commands.
 
 ## Files Changed in PR 2
 
@@ -71,12 +78,69 @@ None for the assigned PR 2 slice. FastAPI/Pydantic/SQLAlchemy classes were inten
 
 ## Remaining Tasks
 
-- [ ] 3.1 Create backend package skeleton under `backend/src/` with `main.py`, `shared/config/`, dependency wiring, and empty FastAPI routers.
+- [x] 3.1 Create backend package skeleton under `backend/src/` with `main.py`, `shared/config/`, dependency wiring, and empty FastAPI routers.
 - [x] 3.2 Create `frontend/` Vite React TypeScript structure with `frontend/src/features/{customers,invoices}/{components,hooks,types,api}/`.
-- [ ] 3.3 Add `docker-compose.yml` for PostgreSQL and environment variables consumed by backend config.
-- [ ] 3.4 Add `migrations/sql/V1__base_schema.sql` for customers, contacts, invoices, invoice_lines, outbox, and auth seeds.
-- [ ] 3.5 Add pytest/pytest-asyncio no-op tests for backend import, UoW contract, and route registration.
-- [ ] 3.6 Add Vitest/React Testing Library no-op tests for customer and invoice feature modules.
-- [ ] 3.7 Add `.github/workflows/ci.yml` running lint/type/test placeholders for backend and frontend.
+- [x] 3.3 Add `docker-compose.yml` for PostgreSQL and environment variables consumed by backend config.
+- [x] 3.4 Add `migrations/sql/V1__base_schema.sql` for customers, contacts, invoices, invoice_lines, outbox, and auth seeds.
+- [x] 3.5 Add pytest/pytest-asyncio no-op tests for backend import, UoW contract, and route registration.
+- [x] 3.6 Add Vitest/React Testing Library no-op tests for customer and invoice feature modules.
+- [x] 3.7 Add `.github/workflows/ci.yml` running lint/type/test placeholders for backend and frontend.
 - [ ] 4.1 Create a follow-up OpenSpec change for Inventory, Accounting, Purchasing, HR, Banking, Sales, and IAM detailed specs.
 - [ ] 4.2 Keep current apply limited to foundation/scaffold; do not implement full business logic beyond contract skeletons.
+
+## Files Changed in PR 4
+
+- `pyproject.toml` — backend dependency and tooling manifest for FastAPI, pytest, pytest-asyncio, Ruff, and Pyright.
+- `backend/src/main.py` — FastAPI application factory and route registration state.
+- `backend/src/shared/config/{__init__.py,settings.py}` — typed environment-backed backend settings.
+- `backend/src/crm/controllers/routes.py`, `backend/src/sales/controllers/routes.py` — empty FastAPI routers for bounded-context route prefixes.
+- `backend/tests/test_app_scaffold.py`, `backend/tests/test_uow_contract.py` — backend scaffold contract tests.
+- `docker-compose.yml`, `.env.example` — local PostgreSQL service and backend environment contract.
+- `migrations/sql/V1__base_schema.sql` — reviewable Flyway base schema and auth seeds.
+- `frontend/package.json`, `frontend/tsconfig.json`, `frontend/vite.config.ts`, `frontend/vitest.setup.ts`, `frontend/eslint.config.js` — frontend test/type/lint harness.
+- `frontend/src/features/{customers,invoices}/components/*.test.tsx` — customer and invoice feature scaffold tests.
+- `.github/workflows/ci.yml` — CI jobs for backend and frontend lint/type/test placeholders.
+- `.gitignore` — local environment, Python cache, and frontend build/test artifact ignores.
+- `uv.lock` — backend dependency lockfile for reproducible `uv sync --locked --dev` installs.
+- `frontend/package-lock.json` — frontend dependency lockfile for reproducible `npm ci` installs.
+
+## TDD Cycle Evidence
+
+| Task | Test File | Layer | Safety Net | RED | GREEN | TRIANGULATE | REFACTOR |
+|------|-----------|-------|------------|-----|-------|-------------|----------|
+| 3.1 | `backend/tests/test_app_scaffold.py` | Backend unit/API scaffold | N/A (runner created in PR4); warning-fix baseline `uv run pytest backend/tests/test_app_scaffold.py` passed 3/3 before route-test refactor | ✅ Written first; warning-fix RED first failed because `httpx2` was missing for `TestClient`, then failed with `404 != 501` after adding the dev test dependency | ✅ `uv run pytest backend/tests/test_app_scaffold.py` passed after real scaffold route handlers were added | ✅ Covered actual HTTP behavior for both `/crm/customers` and `/sales/invoices`, not internal app state | ✅ Removed `app.state.registered_router_prefixes` tracking from `main.py` |
+| 3.3 | `backend/tests/test_app_scaffold.py` | Backend unit/config | N/A (new config) | ✅ Written first against `Settings.from_env()` before config existed | ✅ Backend pytest passed after `.env.example`, Docker env names, and settings implementation | ✅ Tested non-default host, port, DB, user, password | ✅ Centralized env reads in `shared.config` |
+| 3.4 | `migrations/sql/V1__base_schema.sql`, `docker-compose.yml`, `.github/workflows/ci.yml` | Flyway migration validation | N/A (Flyway runner added in warning-fix pass) | ✅ `docker compose run --rm flyway` failed before the fix with `no such service: flyway` | ✅ Added a Docker Compose Flyway service and CI job that runs `docker compose up -d postgres` followed by `docker compose run --rm flyway` against PostgreSQL | ✅ Local `docker compose config` validates PostgreSQL + Flyway wiring; full local Flyway execution is blocked because the Docker daemon is not running | ✅ Kept Flyway isolated to tooling/CI and did not change migration SQL semantics |
+| 3.5 | `backend/tests/test_app_scaffold.py`, `backend/tests/test_uow_contract.py` | Backend unit/contract | N/A (runner created in PR4) | ✅ Tests added before implementation; first backend run failed on missing `main` | ✅ `uv run pytest` passed: 5/5 | ✅ Import, route registration, settings, UoW method presence, and async method checks | ✅ Fixed settings default constants for slotted dataclass behavior |
+| 3.6 | `frontend/src/features/customers/components/CustomerListPlaceholder.test.tsx`, `frontend/src/features/invoices/components/InvoiceListPlaceholder.test.tsx` | Frontend component/unit | N/A (runner created in PR4) | ✅ Tests added before dependency install; first `npm test` failed with `vitest: command not found` | ✅ `npm test` passed: 4/4 after Vitest/RTL setup | ✅ Covered rendered accessible regions plus bounded-context query keys for both modules | ➖ None needed |
+| 3.7 | `.github/workflows/ci.yml`, `uv.lock`, `frontend/package-lock.json` | CI/tooling | N/A (new workflow) | ✅ Verify warning identified missing lockfiles; `uv sync --locked --dev`/`npm ci` were not enforceable before lockfiles existed | ✅ Generated `uv.lock` and `frontend/package-lock.json`; CI now uses `uv sync --locked --dev`, `npm ci`, and frontend cache dependency path | ✅ Reproducible install checks passed locally for backend and frontend lockfiles | ✅ Kept tooling changes within PR4 scope |
+
+## Test Summary
+
+- Backend tests: `uv run pytest` → 5 passed.
+- Frontend tests: `npm test` → 4 passed.
+- Backend lint/type: `uv run ruff check backend/src backend/tests` → passed; `uv run pyright` → passed.
+- Frontend lint/type: `npm run lint` → passed; `npm run typecheck` → passed.
+- Approval tests: None — no refactoring tasks.
+- Pure functions created: 0; PR4 is tooling/scaffold wiring only.
+
+## PR4 Verify Warning Fixes
+
+| Warning | Resolution | Evidence |
+|---------|------------|----------|
+| Missing dependency lockfiles | Added `uv.lock` and `frontend/package-lock.json`; updated CI to use locked installs. | `uv sync --locked --dev` passed; `npm ci` passed; lockfile sizes are 523 lines and 3,938 lines respectively. |
+| Flyway SQL not executed by Flyway runner | Added a `flyway` Docker Compose service and CI migration-validation job that applies `migrations/sql/V1__base_schema.sql` against the PostgreSQL service. | `docker compose config` passed with PostgreSQL and Flyway services. Local execution command is `docker compose up -d postgres && docker compose run --rm flyway`; it could not run locally because the Docker daemon is unavailable. |
+| Route registration test implementation-detail coupled | Replaced `app.state.registered_router_prefixes` assertion with HTTP behavior assertions through FastAPI `TestClient`; added scaffold GET handlers returning explicit `501` responses for CRM customers and Sales invoices. | RED: `404 != 501`; GREEN: `uv run pytest backend/tests/test_app_scaffold.py` passed 3/3; full `uv run pytest` passed 5/5. |
+
+## Warning-Fix Verification Commands
+
+- `uv sync --locked --dev` → passed.
+- `uv run pytest` → 5 passed.
+- `uv run ruff check backend/src backend/tests` → passed.
+- `uv run pyright` → 0 errors, 0 warnings.
+- `npm ci` → passed.
+- `npm run lint` → passed.
+- `npm run typecheck` → passed.
+- `npm test` → 2 files / 4 tests passed.
+- `docker compose config` → passed.
+- `docker compose up -d postgres && docker compose run --rm flyway` → blocked locally by unavailable Docker daemon; CI has the runnable Flyway validation path.
