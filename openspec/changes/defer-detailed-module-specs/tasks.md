@@ -19,10 +19,10 @@ Chain strategy: stacked-to-main
 ## Phase 1: Spec Authoring
 
 - [x] 1.1 Write Inventory detailed spec for products, warehouses, stock movements, valuation inputs, and Sales/Purchasing coordination.
-- [ ] 1.2 Write Accounting detailed spec for chart of accounts, journal entries, AR/AP, reports, and traceability from source contexts.
+- [x] 1.2 Write Accounting detailed spec for chart of accounts, journal entries, AR/AP, reports, and traceability from source contexts.
 - [x] 1.3 Write Purchasing detailed spec for suppliers, purchase orders, goods receipts, supplier invoices, and payables handoff.
 - [ ] 1.4 Write HR detailed spec for employees, contracts, payroll inputs, deduction catalog, bonuses, suspensions, and accounting handoff.
-- [ ] 1.5 Write Banking detailed spec for bank accounts, movements, checks, deposits, debit/credit notes, payments, receipts, and reconciliation.
+- [x] 1.5 Write Banking detailed spec for bank accounts, movements, checks, deposits, debit/credit notes, payments, receipts, and reconciliation.
 - [ ] 1.6 Write Sales detailed spec extensions for quotes, orders, and conversion flows that precede invoice creation.
 - [ ] 1.7 Write IAM detailed spec for tenants, users, roles, permissions, sessions, RBAC checks, and tenant isolation.
 
