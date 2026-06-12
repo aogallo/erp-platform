@@ -14,7 +14,7 @@ Tasks 1.4 and 1.7 are complete. HR and IAM specs use OpenSpec `ADDED Requirement
 | Check | Result | Evidence |
 |-------|--------|----------|
 | Task status | ✅ | 1.4 HR and 1.7 IAM checked; prior 1.1, 1.2, 1.3, 1.5 remain checked; 1.6, 2.1, 2.2 remain unchecked. |
-| HR coverage | ✅ | Employees, contracts, payroll inputs, deduction catalog, bonuses, suspensions, accounting handoff, tenant scope, permissions, Decimal/UTC, and auditability covered. |
+| HR coverage | ✅ | Employees, contracts, payroll inputs, deduction catalog, bonuses, suspensions, payroll regeneration for unapproved runs, accounting handoff, tenant scope, permissions, Decimal/UTC, and auditability covered. |
 | IAM coverage | ✅ | Tenants, users, roles, permissions, sessions, RBAC checks, tenant isolation, self-hosted provider boundary, and migration-safe abstractions covered. |
 | OpenSpec format | ✅ | Both specs use `## ADDED Requirements` and `#### Scenario` Given/When/Then bullets. |
 | Cross-context boundaries | ✅ | HR and IAM use ports/events/services/handoff contracts; no direct table coupling is specified. |
@@ -36,10 +36,10 @@ Tasks 1.4 and 1.7 are complete. HR and IAM specs use OpenSpec `ADDED Requirement
 
 | Domain | Requirements | Scenarios | Result |
 |--------|--------------|-----------|--------|
-| HR | 7 | 21 | ✅ COMPLIANT by source inspection for spec-only scope |
+| HR | 7 | 24 | ✅ COMPLIANT by source inspection for spec-only scope |
 | IAM | 7 | 21 | ✅ COMPLIANT by source inspection for spec-only scope |
 
-**Compliance summary**: 42/42 HR+IAM scenarios verified for documentation completeness. Runtime compliance tests are not applicable for this slice.
+**Compliance summary**: 45/45 HR+IAM scenarios verified for documentation completeness. Runtime compliance tests are not applicable for this slice.
 
 ## Issues Found
 

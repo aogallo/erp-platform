@@ -116,6 +116,28 @@ The system MUST record tenant-scoped bonuses, allowances, absences, and suspensi
 
 HR MUST generate tenant-scoped payroll runs from approved contracts, payroll inputs, bonuses, deduction catalog definitions, and suspensions. Approved payroll totals SHALL use Decimal money semantics and UTC timestamps. HR MUST provide approved payroll obligations and expense summaries to Accounting through a service port, event, or integration message; HR MUST NOT write Accounting tables directly. The handoff SHALL include tenant, payroll run reference, employee or summarized counterparty references, gross amounts, deduction breakdown, net payable amount, currency, occurred_at UTC timestamp, and idempotency key.
 
+#### Scenario: Regenerate unapproved payroll run
+
+- GIVEN payroll run PR-2026-01 is in draft or calculated status and has not been approved
+- AND an authorized HR user changes an approved payroll input for the same period
+- WHEN the user regenerates payroll run PR-2026-01
+- THEN HR recalculates the payroll totals from the current approved contracts, inputs, bonuses, deductions, and suspensions
+- AND HR records a new payroll calculation version with actor, UTC timestamp, reason, and previous version reference
+
+#### Scenario: Regenerate unapproved payroll multiple times
+
+- GIVEN payroll run PR-2026-01 has not been approved
+- WHEN an authorized HR user regenerates the payroll run multiple times before approval
+- THEN HR permits each regeneration and preserves the calculation version history
+- AND only the latest unapproved calculation is eligible for approval
+
+#### Scenario: Approved payroll run cannot be regenerated in place
+
+- GIVEN payroll run PR-2026-01 is approved
+- WHEN an HR user attempts to regenerate PR-2026-01 in place
+- THEN HR rejects the regeneration
+- AND HR requires reversal or adjustment inputs in a later payroll run to correct approved payroll
+
 #### Scenario: Approve payroll and hand off payable obligations
 
 - GIVEN payroll run PR-2026-01 is calculated from approved inputs
