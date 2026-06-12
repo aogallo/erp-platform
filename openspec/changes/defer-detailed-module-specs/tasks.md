@@ -23,7 +23,7 @@ Chain strategy: stacked-to-main
 - [x] 1.3 Write Purchasing detailed spec for suppliers, purchase orders, goods receipts, supplier invoices, and payables handoff.
 - [x] 1.4 Write HR detailed spec for employees, contracts, payroll inputs, deduction catalog, bonuses, suspensions, and accounting handoff.
 - [x] 1.5 Write Banking detailed spec for bank accounts, movements, checks, deposits, debit/credit notes, payments, receipts, and reconciliation.
-- [ ] 1.6 Write Sales detailed spec extensions for quotes, orders, and conversion flows that precede invoice creation.
+- [x] 1.6 Write Sales detailed spec extensions for quotes, orders, and conversion flows that precede invoice creation.
 - [x] 1.7 Write IAM detailed spec for tenants, users, roles, permissions, sessions, RBAC checks, and tenant isolation.
 
 ## Phase 2: Consistency Review
