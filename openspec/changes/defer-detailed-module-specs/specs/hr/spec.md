@@ -114,7 +114,7 @@ The system MUST record tenant-scoped bonuses, allowances, absences, and suspensi
 
 ### Requirement: Payroll Runs and Accounting Handoff
 
-HR MUST generate tenant-scoped payroll runs from approved contracts, payroll inputs, bonuses, deduction catalog definitions, and suspensions. Approved payroll totals SHALL use Decimal money semantics and UTC timestamps. HR MUST provide approved payroll obligations and expense summaries to Accounting through a service port, event, or integration message; HR MUST NOT write Accounting tables directly. The handoff SHALL include tenant, payroll run reference, employee or summarized counterparty references, gross amounts, deduction breakdown, net payable amount, currency, occurred_at UTC timestamp, and idempotency key.
+HR MUST generate tenant-scoped payroll runs from approved contracts, payroll inputs, bonuses, deduction catalog definitions, and suspensions. Approved payroll totals SHALL use Decimal money semantics and UTC timestamps. HR MUST provide approved payroll payable obligations and expense summaries to Accounting through a service port, event, or integration message; HR MUST NOT write Accounting tables directly. The handoff SHALL include tenant, payroll run reference, employee or summarized counterparty references, gross amounts, deduction breakdown, net payable amount, currency, occurred_at UTC timestamp, and idempotency key.
 
 #### Scenario: Regenerate unapproved payroll run
 
@@ -142,7 +142,7 @@ HR MUST generate tenant-scoped payroll runs from approved contracts, payroll inp
 
 - GIVEN payroll run PR-2026-01 is calculated from approved inputs
 - WHEN an authorized HR user approves the payroll run
-- THEN HR freezes payroll totals and emits or exposes payroll obligations to Accounting
+- THEN HR freezes payroll totals and emits or exposes payroll payable obligations to Accounting
 
 #### Scenario: Duplicate payroll handoff is idempotent
 

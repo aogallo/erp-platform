@@ -120,7 +120,7 @@ Banking MUST coordinate ledger effects with Accounting through a service port, e
 
 ### Requirement: Bank Reconciliation
 
-Banking MUST reconcile imported or entered bank statement lines against recorded bank movements. A reconciliation SHALL be tenant-scoped and include bank account, statement period, statement lines, matched movements, exceptions, status, reconciled_at UTC timestamp, and reconciled_by principal. Reconciliation results SHALL be shared with Accounting through an approved boundary when they affect settlement or reporting status.
+Banking MUST reconcile imported or entered bank statement lines against recorded bank movements. A reconciliation SHALL be tenant-scoped and include bank account, statement period, statement lines, matched movements, exceptions, status, reconciled_at UTC timestamp, and reconciled_by principal. Reconciliation results SHALL be shared with Accounting through the configured integration boundary when they affect settlement or reporting status.
 
 #### Scenario: Match statement line to movement
 

@@ -137,13 +137,13 @@ Sales MUST coordinate stock availability, reservation, release, and final deduct
 
 ### Requirement: Sales Order to Invoice Conversion
 
-Sales MUST create invoices from confirmed or fulfilled sales orders using the existing Invoice specification boundaries. Invoice creation from an order SHALL preserve source order reference, customer reference, line quantities, prices, tax breakdown, currency, and Decimal totals. Invoice posting, Inventory deduction, Accounting receivable handoff, and asynchronous FEL authorization remain governed by the Invoice specification and cross-cutting outbox boundary.
+Sales MUST create invoices from confirmed or fulfilled sales orders using the existing Invoice draft-creation and posting boundaries. Invoice creation from an order SHALL preserve source order reference, customer reference, line quantities, prices, tax breakdown, currency, and Decimal totals, and SHALL satisfy the Invoice specification requirement for an existing customer and at least one line item. Invoice posting, Inventory deduction, Accounting receivable handoff, and asynchronous FEL authorization remain governed by the Invoice specification and cross-cutting outbox boundary.
 
 #### Scenario: Convert confirmed order to draft invoice
 
 - GIVEN sales order SO-10 is confirmed and not fully invoiced
 - WHEN an authorized Sales user creates an invoice from SO-10
-- THEN Sales creates a draft invoice with source order reference SO-10 and keeps posting side effects pending until invoice posting
+- THEN Sales creates a draft invoice with source order reference SO-10, at least one line item, and keeps posting side effects pending until invoice posting
 
 #### Scenario: Duplicate full invoice conversion rejected
 
