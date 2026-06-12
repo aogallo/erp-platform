@@ -124,7 +124,7 @@ IAM MUST provide tenant scope to every authenticated request and every bounded c
 
 #### Scenario: Cross-context handoff includes tenant
 
-- GIVEN HR sends payroll obligations to Accounting
+- GIVEN HR sends payroll payable obligations to Accounting
 - WHEN Accounting receives the handoff
 - THEN the handoff includes tenant ID and Accounting records data only for that tenant
 

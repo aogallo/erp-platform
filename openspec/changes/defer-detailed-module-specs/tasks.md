@@ -28,5 +28,5 @@ Chain strategy: stacked-to-main
 
 ## Phase 2: Consistency Review
 
-- [ ] 2.1 Reconcile cross-context scenarios against `docs/bounded-context.md`, `AGENTS.md`, `openspec/specs/customer/spec.md`, and `openspec/specs/invoice/spec.md`.
-- [ ] 2.2 Split the work into smaller PR slices if the detailed spec diff exceeds the 400-line review budget.
+- [x] 2.1 Reconcile cross-context scenarios against `docs/bounded-context.md`, `AGENTS.md`, `openspec/specs/customer/spec.md`, and `openspec/specs/invoice/spec.md`.
+- [x] 2.2 Split the work into smaller PR slices if the detailed spec diff exceeds the 400-line review budget.

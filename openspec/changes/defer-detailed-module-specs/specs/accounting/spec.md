@@ -86,7 +86,7 @@ Accounting MUST accept payable obligations from Purchasing, HR, or approved expe
 
 #### Scenario: HR payroll payable accepted through boundary
 
-- GIVEN HR approves payroll obligations for period "2026-01"
+- GIVEN HR approves payroll payable obligations for period "2026-01"
 - WHEN HR hands off payroll payable totals to Accounting
 - THEN Accounting records payable ledger entries without owning employee compensation inputs
 
