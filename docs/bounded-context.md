@@ -157,12 +157,14 @@ Entities:
 - Journal Entry
 - Account Receivable
 - Account Payable
+- Cost Center
 
 Responsibilities:
 
 - Financial reporting
 - Ledger management
 - Reconciliation
+- Own the cost center catalog lifecycle for finance reporting and allocation references.
 
 API prefix: `/accounting`
 
@@ -170,6 +172,7 @@ Relationships:
 
 - Receives posted Sales invoice entries and Purchasing payables.
 - Provides reconciled balances to Banking.
+- Exposes active cost center references to HR through a boundary/read contract.
 - Does not own operational customer or inventory records.
 
 ---
@@ -233,7 +236,11 @@ Entities:
 
 - Employee
 - Contract
-- Department
+- Organizational Unit
+- Plaza
+- Plaza Reporting Line
+- Plaza Assignment
+- Plaza Cost Allocation
 - Payroll Period
 - Payroll Run
 - Deduction Catalog
@@ -248,7 +255,7 @@ Responsibilities:
 - Maintain a deduction catalog with frequency, legal basis, applicability, and calculation method.
 - Record employee bonuses, allowances, absences, and suspensions that affect payroll.
 - Provide payroll and expense obligations to Accounting.
-- Manage role-independent organizational data.
+- Manage role-independent organizational units, plazas, reporting lines, assignments, and cost allocation references.
 
 API prefix: `/hr`
 
@@ -256,6 +263,7 @@ Relationships:
 
 - Uses IAM identities when employees also access the system.
 - Sends approved payroll accounting data to Accounting.
+- References Accounting-owned cost centers for plaza or assignment allocations without owning the cost center catalog lifecycle.
 
 Key Rules:
 
@@ -263,6 +271,9 @@ Key Rules:
 - Legal deductions and recurring deductions MUST come from the deduction catalog, not hard-coded payroll logic.
 - Suspensions, absences, and bonuses MUST be explicit payroll inputs with audit history.
 - Accounting receives approved payroll obligations; HR owns payroll calculation inputs and employee compensation records.
+- Organizational units, plazas, reporting lines, assignments, and allocation records are HR-owned organizational master data; IAM supplies identity, permissions, and tenant scope only.
+- Plazas MAY be vacant and remain valid authorization positions for future workflow consumers.
+- HR stores cost center database identifiers for allocations and exposes human-readable Accounting cost center codes through contracts or read models.
 
 ---
 
@@ -278,5 +289,6 @@ Key Rules:
 | Purchasing | Accounting | Supplier invoices create payables. |
 | Accounting | Banking | Payable/receivable settlement and reconciliation. |
 | HR | Accounting | Payroll and employee expense obligations. |
+| Accounting | HR | Active cost center validation/read boundary for HR plaza and assignment allocations. |
 
 Reports are not a bounded context yet. Reporting SHOULD consume read models or projections from the contexts above without owning transactional business rules.
