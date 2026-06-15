@@ -7,10 +7,10 @@ from typing import Protocol
 
 
 OrganizationalUnitRecord = object
-PlazaRecord = object
-PlazaReportingLineRecord = object
-PlazaAssignmentRecord = object
-PlazaCostAllocationRecord = object
+PositionRecord = object
+PositionReportingLineRecord = object
+PositionAssignmentRecord = object
+PositionCostAllocationRecord = object
 
 
 class HROrganizationRepository(Protocol):
@@ -31,33 +31,35 @@ class HROrganizationRepository(Protocol):
     ) -> list[OrganizationalUnitRecord]:
         """Return tenant-scoped organizational units for an effective date."""
 
-    async def add_plaza(self, plaza: PlazaRecord) -> PlazaRecord:
-        """Persist a plaza and return the stored record."""
+    async def add_position(self, position: PositionRecord) -> PositionRecord:
+        """Persist a position and return the stored record."""
 
-    async def get_plaza(self, *, tenant_id: str, plaza_id: int) -> PlazaRecord | None:
-        """Return a tenant-scoped plaza by ID."""
+    async def get_position(
+        self, *, tenant_id: str, position_id: int
+    ) -> PositionRecord | None:
+        """Return a tenant-scoped position by ID."""
 
-    async def list_plazas(
+    async def list_positions(
         self, *, tenant_id: str, effective_date: date | None = None
-    ) -> list[PlazaRecord]:
-        """Return tenant-scoped plazas for an effective date."""
+    ) -> list[PositionRecord]:
+        """Return tenant-scoped positions for an effective date."""
 
     async def add_reporting_line(
-        self, reporting_line: PlazaReportingLineRecord
-    ) -> PlazaReportingLineRecord:
-        """Persist an effective-dated plaza reporting line."""
+        self, reporting_line: PositionReportingLineRecord
+    ) -> PositionReportingLineRecord:
+        """Persist an effective-dated position reporting line."""
 
     async def add_assignment(
-        self, assignment: PlazaAssignmentRecord
-    ) -> PlazaAssignmentRecord:
-        """Persist an effective-dated plaza assignment."""
+        self, assignment: PositionAssignmentRecord
+    ) -> PositionAssignmentRecord:
+        """Persist an effective-dated position assignment."""
 
     async def list_active_assignments(
         self, *, tenant_id: str, employee_id: int | None, person_id: int | None
-    ) -> list[PlazaAssignmentRecord]:
-        """Return active assignments used to enforce one active plaza assignment."""
+    ) -> list[PositionAssignmentRecord]:
+        """Return active assignments used to enforce one active position assignment."""
 
     async def replace_cost_allocations(
-        self, *, plaza_id: int, allocations: list[PlazaCostAllocationRecord]
-    ) -> list[PlazaCostAllocationRecord]:
-        """Replace cost-center allocations for a plaza."""
+        self, *, position_id: int, allocations: list[PositionCostAllocationRecord]
+    ) -> list[PositionCostAllocationRecord]:
+        """Replace cost-center allocations for a position."""

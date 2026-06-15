@@ -4,7 +4,7 @@
 
 ### Requirement: Cost Center Catalog and HR Reference Boundary
 
-Accounting MUST own the tenant-scoped cost center catalog lifecycle for finance reporting and allocations. Each cost center SHALL have a stable database identifier, human-readable code, name, status, effective dates when applicable, and UTC audit timestamps. HR MAY reference active cost centers for plaza or assignment allocations through database relationships plus a boundary/read contract that exposes human-readable codes, but HR MUST NOT create, activate, deactivate, or otherwise own cost center catalog lifecycle.
+Accounting MUST own the tenant-scoped cost center catalog lifecycle for finance reporting and allocations. Each cost center SHALL have a stable database identifier, human-readable code, name, status, effective dates when applicable, and UTC audit timestamps. HR MAY reference active cost centers for position or assignment allocations through database relationships plus a boundary/read contract that exposes human-readable codes, but HR MUST NOT create, activate, deactivate, or otherwise own cost center catalog lifecycle.
 
 #### Scenario: Accounting maintains cost center
 
@@ -15,7 +15,7 @@ Accounting MUST own the tenant-scoped cost center catalog lifecycle for finance 
 #### Scenario: HR validates active cost center reference
 
 - GIVEN Accounting exposes active cost center CC-10 for tenant A
-- WHEN HR validates the cost center database identifier for a plaza allocation
+- WHEN HR validates the cost center database identifier for a position allocation
 - THEN Accounting returns a valid active reference with code CC-10 without exposing direct table access
 
 #### Scenario: HR cannot own catalog lifecycle

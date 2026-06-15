@@ -20,7 +20,7 @@ def test_bounded_context_routes_are_registered_with_scaffold_behavior() -> None:
     customer_response = client.get("/crm/customers")
     invoice_response = client.get("/sales/invoices")
     organizational_units_response = client.get("/hr/organizational-units")
-    plazas_response = client.get("/hr/plazas")
+    positions_response = client.get("/hr/positions")
 
     assert customer_response.status_code == 501
     assert customer_response.json() == {
@@ -37,9 +37,9 @@ def test_bounded_context_routes_are_registered_with_scaffold_behavior() -> None:
             "implemented."
         )
     }
-    assert plazas_response.status_code == 501
-    assert plazas_response.json() == {
-        "detail": "HR plaza endpoint scaffold is registered but not implemented."
+    assert positions_response.status_code == 501
+    assert positions_response.json() == {
+        "detail": "HR position endpoint scaffold is registered but not implemented."
     }
 
 
