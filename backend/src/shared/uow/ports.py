@@ -5,9 +5,9 @@ from __future__ import annotations
 from decimal import Decimal
 from typing import Protocol
 
-from accounting.repositories.ports import AccountingCostCenterLookupPort
+from accounting.repositories.contracts import AccountingCostCenterLookupPort
 from crm.repositories.ports import CustomerRepository
-from hr.repositories.ports import HROrganizationRepository
+from hr.repositories.contracts import HROrganizationRepository
 from sales.repositories.ports import InvoiceRepository
 from shared.outbox.ports import OutboxRepository
 

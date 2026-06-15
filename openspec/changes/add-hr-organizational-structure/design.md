@@ -33,9 +33,9 @@ For a position allocation, the service verifies HR permission and tenant scope, 
 | `backend/src/hr/domain/organization.py` | Create | Domain dataclasses/enums for units, positions, hierarchy, single-active assignments, vinculation references, allocations. |
 | `backend/src/hr/schemas/organization.py` | Create | Explicit request/response/query dataclasses now; migrate to Pydantic v2 when schema scaffold does. |
 | `backend/src/hr/services/organization.py` | Create | `OrganizationService` Protocol for create/list units, create positions, set superior position, assign employee, validate authorization target, and set allocations. |
-| `backend/src/hr/repositories/ports.py` | Create | `HROrganizationRepository` Protocol for tenant-scoped org persistence. |
+| `backend/src/hr/repositories/contracts.py` | Create | `HROrganizationRepository` Protocol for tenant-scoped org persistence. |
 | `backend/src/hr/controllers/routes.py` | Create | `/hr/organizational-units` and `/hr/positions` route constants plus 501 scaffold endpoint. |
-| `backend/src/accounting/repositories/ports.py` | Create | `AccountingCostCenterLookupPort` Protocol returning active/inactive/not-found validation results. |
+| `backend/src/accounting/repositories/contracts.py` | Create | `AccountingCostCenterLookupPort` Protocol returning active/inactive/not-found validation results. |
 | `backend/src/shared/uow/ports.py` | Modify | Add HR repository and Accounting cost-center lookup attributes to the Unit of Work contract. |
 | `backend/src/main.py` | Modify | Include the HR router. |
 | `backend/tests/test_app_scaffold.py` | Modify | Assert HR scaffold route registration. |

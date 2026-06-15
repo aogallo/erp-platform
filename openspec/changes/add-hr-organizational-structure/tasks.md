@@ -34,8 +34,8 @@ Chain strategy: stacked-to-main
 
 - [x] 2.1 Create `backend/src/hr/__init__.py` and `backend/src/hr/controllers/routes.py` with `/hr/organizational-units` and `/hr/positions` route constants plus 501 scaffold endpoints.
 - [x] 2.2 Update `backend/src/main.py` to include the HR router after CRM/Sales routers.
-- [x] 2.3 Create `backend/src/accounting/repositories/ports.py` with `AccountingCostCenterLookupPort` and validation result types.
-- [x] 2.4 Create `backend/src/hr/repositories/ports.py` with `HROrganizationRepository` protocol for tenant-scoped units, positions, hierarchy, assignments, and allocations.
+- [x] 2.3 Create `backend/src/accounting/repositories/contracts.py` with `AccountingCostCenterLookupPort` and validation result types.
+- [x] 2.4 Create `backend/src/hr/repositories/contracts.py` with `HROrganizationRepository` protocol for tenant-scoped units, positions, hierarchy, assignments, and allocations.
 - [x] 2.5 Modify `backend/src/shared/uow/ports.py` to expose HR organization and Accounting cost-center lookup ports.
 
 ## Phase 3: Domain and Service GREEN
