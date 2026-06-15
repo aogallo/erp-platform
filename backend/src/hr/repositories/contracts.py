@@ -5,12 +5,19 @@ from __future__ import annotations
 from datetime import date
 from typing import Protocol
 
+from hr.domain.organization import (
+    OrganizationalUnit,
+    Position,
+    PositionAssignment,
+    PositionCostAllocation,
+    PositionReportingLine,
+)
 
-OrganizationalUnitRecord = object
-PositionRecord = object
-PositionReportingLineRecord = object
-PositionAssignmentRecord = object
-PositionCostAllocationRecord = object
+OrganizationalUnitRecord = OrganizationalUnit
+PositionRecord = Position
+PositionReportingLineRecord = PositionReportingLine
+PositionAssignmentRecord = PositionAssignment
+PositionCostAllocationRecord = PositionCostAllocation
 
 
 class HROrganizationRepository(Protocol):
@@ -48,6 +55,11 @@ class HROrganizationRepository(Protocol):
         self, reporting_line: PositionReportingLineRecord
     ) -> PositionReportingLineRecord:
         """Persist an effective-dated position reporting line."""
+
+    async def list_reporting_lines(
+        self, *, tenant_id: str, position_id: int
+    ) -> list[PositionReportingLineRecord]:
+        """Return tenant-scoped reporting lines for a position."""
 
     async def add_assignment(
         self, assignment: PositionAssignmentRecord

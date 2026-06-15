@@ -27,8 +27,8 @@ Chain strategy: stacked-to-main
 
 - [x] 1.1 Add failing route assertions to `backend/tests/test_app_scaffold.py` for `GET /hr/organizational-units` and `GET /hr/positions` returning 501.
 - [x] 1.2 Add failing UoW assertions to `backend/tests/test_uow_contract.py` for `hr_organization` and `accounting_cost_centers` protocol attributes.
-- [ ] 1.3 Create failing domain tests in `backend/tests/hr/test_organization_domain.py` for vacant position validity, effective superior lookup, one active assignment, and Decimal allocation total 100%.
-- [ ] 1.4 Create failing service tests in `backend/tests/hr/test_organization_service.py` for inactive Accounting cost-center rejection and no approval workflow side effects.
+- [x] 1.3 Create failing domain tests in `backend/tests/hr/test_organization_domain.py` for vacant position validity, effective superior lookup, one active assignment, and Decimal allocation total 100%.
+- [x] 1.4 Create failing service tests in `backend/tests/hr/test_organization_service.py` for inactive Accounting cost-center rejection, no approval workflow side effects, planned organization use-case contract exposure, and repository-backed concurrent active assignment rejection.
 
 ## Phase 2: Contract and Scaffold GREEN
 
@@ -40,14 +40,14 @@ Chain strategy: stacked-to-main
 
 ## Phase 3: Domain and Service GREEN
 
-- [ ] 3.1 Create `backend/src/hr/domain/organization.py` dataclasses/enums with tenant IDs, effective dates, audit fields, vacancy state, vinculation references, and Decimal allocations.
-- [ ] 3.2 Implement domain helpers in `backend/src/hr/domain/organization.py` for superior lookup, overlapping assignment detection, and exact 100% allocation validation.
-- [ ] 3.3 Create `backend/src/hr/schemas/organization.py` explicit request/response/query dataclasses exposing cost-center codes in allocation read models.
-- [ ] 3.4 Create `backend/src/hr/services/organization.py` `OrganizationService` protocol/contract for create/list units, create positions, set superior, assign employee, validate authorization target, and set allocations.
+- [x] 3.1 Create `backend/src/hr/domain/organization.py` dataclasses/enums with tenant IDs, effective dates, audit fields, vacancy state, vinculation references, and Decimal allocations.
+- [x] 3.2 Implement domain helpers in `backend/src/hr/domain/organization.py` for superior lookup, overlapping assignment detection, and exact 100% allocation validation.
+- [x] 3.3 Create `backend/src/hr/schemas/organization.py` explicit request/response/query dataclasses exposing cost-center codes in allocation read models.
+- [x] 3.4 Create `backend/src/hr/services/organization.py` `OrganizationService` protocol/contract for create/list units, create positions, set superior, assign employee, validate authorization target, and set allocations.
 
 ## Phase 4: Documentation and Verification
 
 - [x] 4.1 Update `docs/bounded-context.md` so HR owns units/positions/assignments/allocations and Accounting owns cost-center catalog lifecycle.
 - [x] 4.2 Keep `backend/migrations/*.sql` out of this slice; document Flyway SQL tables as later work until migration scaffolding exists.
-- [ ] 4.3 Run `uv run pytest backend/tests/test_app_scaffold.py backend/tests/test_uow_contract.py backend/tests/hr/test_organization_domain.py backend/tests/hr/test_organization_service.py`; if tooling scaffolding is missing, record the blocker and preserve RED tests.
+- [x] 4.3 Run `uv run pytest backend/tests/test_app_scaffold.py backend/tests/test_uow_contract.py backend/tests/hr/test_organization_domain.py backend/tests/hr/test_organization_service.py`; if tooling scaffolding is missing, record the blocker and preserve RED tests.
 - [x] 4.4 Refactor only for import safety, explicit contracts, and no direct cross-context table access.
