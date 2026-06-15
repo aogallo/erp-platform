@@ -5,7 +5,7 @@ from typing import cast
 
 import pytest
 
-from accounting.repositories.ports import (
+from accounting.repositories.contracts import (
     CostCenterValidationResult,
     CostCenterValidationStatus,
 )

@@ -5,7 +5,7 @@ from __future__ import annotations
 from datetime import UTC, date, datetime
 from typing import Protocol, runtime_checkable
 
-from accounting.repositories.ports import CostCenterValidationResult
+from accounting.repositories.contracts import CostCenterValidationResult
 from hr.domain.organization import (
     OrganizationalUnit,
     Position,
