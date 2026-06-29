@@ -6,6 +6,7 @@ from typing import cast
 import pytest
 
 from accounting.repositories.contracts import (
+    AccountingCostCenterLookupPort,
     CostCenterValidationResult,
     CostCenterValidationStatus,
 )
@@ -13,8 +14,11 @@ from hr.domain.organization import (
     OrganizationalUnit,
     Position,
     PositionAssignment,
+    PositionCostAllocation,
     PositionReportingLine,
+    VinculationType,
 )
+from hr.repositories.contracts import HROrganizationRepository
 from hr.schemas.organization import (
     AssignPositionCommand,
     CreateOrganizationalUnitCommand,
@@ -35,12 +39,14 @@ from hr.services.organization import (
 @dataclass(slots=True)
 class FakeAccountingCostCenters:
     results: dict[int, CostCenterValidationResult]
-    calls: list[int] = field(default_factory=lambda: cast(list[int], []))
+    calls: list[tuple[str, int, date]] = field(
+        default_factory=lambda: cast(list[tuple[str, int, date]], [])
+    )
 
     async def validate_active_cost_center(
         self, *, tenant_id: str, cost_center_id: int, effective_date: date
     ) -> CostCenterValidationResult:
-        self.calls.append(cost_center_id)
+        self.calls.append((tenant_id, cost_center_id, effective_date))
         return self.results[cost_center_id]
 
 
@@ -56,6 +62,9 @@ class FakeHROrganizationRepository:
     )
     reporting_lines: list[PositionReportingLine] = field(
         default_factory=lambda: cast(list[PositionReportingLine], [])
+    )
+    stored_allocations: list[PositionCostAllocation] = field(
+        default_factory=lambda: cast(list[PositionCostAllocation], [])
     )
     replaced_allocations: int = 0
     approval_side_effects: int = 0
@@ -124,9 +133,10 @@ class FakeHROrganizationRepository:
         ]
 
     async def replace_cost_allocations(
-        self, *, position_id: int, allocations: list[object]
-    ) -> list[object]:
+        self, *, position_id: int, allocations: list[PositionCostAllocation]
+    ) -> list[PositionCostAllocation]:
         self.replaced_allocations += 1
+        self.stored_allocations = allocations
         return allocations
 
     async def list_reporting_lines(
@@ -188,9 +198,78 @@ async def test_set_position_cost_allocation_rejects_inactive_cost_center() -> No
             )
         )
 
-    assert uow.accounting_cost_centers.calls == [3000]
+    assert uow.accounting_cost_centers.calls == [
+        ("tenant-a", 3000, date(2026, 4, 1))
+    ]
     assert uow.hr_organization.replaced_allocations == 0
     assert uow.commits == 0
+
+
+@pytest.mark.asyncio
+async def test_set_position_cost_allocation_persists_split_and_returns_codes() -> None:
+    position = Position(
+        id=10,
+        tenant_id="tenant-a",
+        organizational_unit_id=20,
+        code="P-10",
+        title="Finance Manager",
+        effective_from=date(2026, 1, 1),
+    )
+    repository = FakeHROrganizationRepository(position=position)
+    cost_centers = FakeAccountingCostCenters(
+        results={
+            1000: CostCenterValidationResult(
+                cost_center_id=1000,
+                status=CostCenterValidationStatus.ACTIVE,
+                code="CC-10",
+            ),
+            1001: CostCenterValidationResult(
+                cost_center_id=1001,
+                status=CostCenterValidationStatus.ACTIVE,
+                code="CC-20",
+            ),
+        }
+    )
+    uow = FakeUnitOfWork(
+        hr_organization=repository,
+        accounting_cost_centers=cost_centers,
+    )
+    service = OrganizationApplicationService(cast(OrganizationUnitOfWork, uow))
+
+    read_model = await service.set_position_cost_allocation(
+        PositionCostAllocationCommand(
+            tenant_id="tenant-a",
+            position_id=10,
+            effective_from=date(2026, 4, 1),
+            allocations=[
+                PositionCostAllocationInput(
+                    cost_center_id=1000,
+                    percentage=Decimal("60"),
+                ),
+                PositionCostAllocationInput(
+                    cost_center_id=1001,
+                    percentage=Decimal("40"),
+                ),
+            ],
+        )
+    )
+
+    assert cost_centers.calls == [
+        ("tenant-a", 1000, date(2026, 4, 1)),
+        ("tenant-a", 1001, date(2026, 4, 1)),
+    ]
+    stored_pairs = [
+        (item.cost_center_id, item.percentage)
+        for item in repository.stored_allocations
+    ]
+    assert stored_pairs == [
+        (1000, Decimal("60")),
+        (1001, Decimal("40")),
+    ]
+    assert [item.cost_center_code for item in read_model] == ["CC-10", "CC-20"]
+    assert sum((item.percentage for item in read_model), Decimal("0")) == Decimal("100")
+    assert repository.replaced_allocations == 1
+    assert uow.commits == 1
 
 
 @pytest.mark.asyncio
@@ -315,6 +394,138 @@ async def test_service_exposes_planned_organization_use_cases() -> None:
 
 
 @pytest.mark.asyncio
+async def test_create_position_rejects_cross_tenant_organizational_unit() -> None:
+    repository = FakeHROrganizationRepository(
+        position=Position(
+            id=99,
+            tenant_id="tenant-a",
+            organizational_unit_id=20,
+            code="P-99",
+            title="Placeholder",
+            effective_from=date(2026, 1, 1),
+        ),
+        units=[
+            OrganizationalUnit(
+                id=20,
+                tenant_id="tenant-a",
+                name="Finance",
+                effective_from=date(2026, 1, 1),
+            )
+        ],
+    )
+    uow = FakeUnitOfWork(
+        hr_organization=repository,
+        accounting_cost_centers=FakeAccountingCostCenters(results={}),
+    )
+    service = OrganizationApplicationService(cast(OrganizationUnitOfWork, uow))
+
+    with pytest.raises(ValueError, match="Organizational unit"):
+        await service.create_position(
+            CreatePositionCommand(
+                tenant_id="tenant-b",
+                position_id=30,
+                organizational_unit_id=20,
+                code="P-30",
+                title="Treasury Analyst",
+                effective_from=date(2026, 2, 1),
+                actor_id="user-20",
+            )
+        )
+
+    assert repository.positions == []
+    assert uow.commits == 0
+
+
+@pytest.mark.asyncio
+async def test_professional_services_label_is_not_decisive_for_vinculation() -> None:
+    repository = FakeHROrganizationRepository(
+        position=Position(
+            id=30,
+            tenant_id="tenant-a",
+            organizational_unit_id=20,
+            code="P-30",
+            title="External Advisor",
+            effective_from=date(2026, 1, 1),
+        )
+    )
+    uow = FakeUnitOfWork(
+        hr_organization=repository,
+        accounting_cost_centers=FakeAccountingCostCenters(results={}),
+    )
+    service = OrganizationApplicationService(cast(OrganizationUnitOfWork, uow))
+
+    assignment = await service.assign_position(
+        AssignPositionCommand(
+            tenant_id="tenant-a",
+            position_id=30,
+            employee_id=None,
+            person_id=200,
+            contract_id=500,
+            effective_from=date(2026, 3, 1),
+            actor_id="user-10",
+            vinculation_reference="professional services",
+        )
+    )
+
+    assert assignment.vinculation_reference == "professional services"
+    assert assignment.vinculation_type is None
+
+    explicitly_classified = await service.assign_position(
+        AssignPositionCommand(
+            tenant_id="tenant-a",
+            position_id=30,
+            employee_id=None,
+            person_id=201,
+            contract_id=501,
+            effective_from=date(2026, 3, 1),
+            actor_id="user-10",
+            vinculation_reference="external advisory agreement",
+            vinculation_type=VinculationType.PROFESSIONAL_SERVICES,
+        )
+    )
+    assert (
+        explicitly_classified.vinculation_type
+        is VinculationType.PROFESSIONAL_SERVICES
+    )
+
+
+@pytest.mark.asyncio
+async def test_iam_linkage_remains_employee_reference_owned_by_hr_assignment() -> None:
+    repository = FakeHROrganizationRepository(
+        position=Position(
+            id=30,
+            tenant_id="tenant-a",
+            organizational_unit_id=20,
+            code="P-30",
+            title="Treasury Analyst",
+            effective_from=date(2026, 1, 1),
+        )
+    )
+    uow = FakeUnitOfWork(
+        hr_organization=repository,
+        accounting_cost_centers=FakeAccountingCostCenters(results={}),
+    )
+    service = OrganizationApplicationService(cast(OrganizationUnitOfWork, uow))
+
+    assignment = await service.assign_position(
+        AssignPositionCommand(
+            tenant_id="tenant-a",
+            position_id=30,
+            employee_id=100,
+            person_id=None,
+            contract_id=500,
+            effective_from=date(2026, 3, 1),
+            actor_id="iam-user-10",
+        )
+    )
+
+    assert assignment.employee_id == 100
+    assert assignment.created_by == "iam-user-10"
+    assert not hasattr(assignment, "iam_user_id")
+    assert repository.active_assignments == [assignment]
+
+
+@pytest.mark.asyncio
 async def test_assign_position_rejects_concurrent_active_assignment() -> None:
     existing_assignment = PositionAssignment(
         tenant_id="tenant-a",
@@ -356,3 +567,16 @@ async def test_assign_position_rejects_concurrent_active_assignment() -> None:
 
     assert repository.active_assignments == [existing_assignment]
     assert uow.commits == 0
+
+
+def test_accounting_cost_center_contract_is_lookup_only_for_hr() -> None:
+    lifecycle_methods = {
+        "create_cost_center",
+        "activate_cost_center",
+        "deactivate_cost_center",
+    }
+
+    assert hasattr(AccountingCostCenterLookupPort, "validate_active_cost_center")
+    assert lifecycle_methods.isdisjoint(set(AccountingCostCenterLookupPort.__dict__))
+    assert lifecycle_methods.isdisjoint(set(HROrganizationRepository.__dict__))
+    assert lifecycle_methods.isdisjoint(set(OrganizationService.__dict__))

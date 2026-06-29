@@ -6,6 +6,8 @@ from dataclasses import dataclass
 from datetime import date
 from decimal import Decimal
 
+from hr.domain.organization import VinculationType
+
 
 @dataclass(frozen=True, slots=True)
 class CreateOrganizationalUnitCommand:
@@ -58,6 +60,7 @@ class AssignPositionCommand:
     actor_id: str
     effective_to: date | None = None
     vinculation_reference: str | None = None
+    vinculation_type: VinculationType | None = None
 
 
 @dataclass(frozen=True, slots=True)
