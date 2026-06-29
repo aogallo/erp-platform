@@ -254,6 +254,7 @@ class OrganizationApplicationService:
             contract_id=command.contract_id,
             effective_from=command.effective_from,
             effective_to=command.effective_to,
+            vinculation_type=command.vinculation_type,
             vinculation_reference=command.vinculation_reference,
             created_at=_utc_now(),
             created_by=command.actor_id,
