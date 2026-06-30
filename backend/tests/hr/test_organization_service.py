@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from datetime import date
+from datetime import UTC, date, datetime
 from decimal import Decimal
 from typing import cast
 
@@ -34,6 +34,20 @@ from hr.services.organization import (
     OrganizationService,
     OrganizationUnitOfWork,
 )
+
+
+def assert_utc_audit(
+    *,
+    created_at: datetime | None,
+    created_by: str | None,
+    actor_id: str,
+    before: datetime,
+    after: datetime,
+) -> None:
+    assert created_by == actor_id
+    assert created_at is not None
+    assert created_at.tzinfo is UTC
+    assert before <= created_at <= after
 
 
 @dataclass(slots=True)
@@ -157,6 +171,185 @@ class FakeUnitOfWork:
 
     async def commit(self) -> None:
         self.commits += 1
+
+
+@pytest.mark.asyncio
+async def test_create_organizational_unit_stamps_bounded_utc_audit_metadata() -> None:
+    uow = FakeUnitOfWork(
+        hr_organization=FakeHROrganizationRepository(
+            position=Position(
+                id=99,
+                tenant_id="tenant-a",
+                organizational_unit_id=20,
+                code="P-99",
+                title="Placeholder",
+                effective_from=date(2026, 1, 1),
+            )
+        ),
+        accounting_cost_centers=FakeAccountingCostCenters(results={}),
+    )
+    service = OrganizationApplicationService(cast(OrganizationUnitOfWork, uow))
+
+    before = datetime.now(UTC)
+    created_unit = await service.create_organizational_unit(
+        CreateOrganizationalUnitCommand(
+            tenant_id="tenant-a",
+            unit_id=21,
+            name="Treasury",
+            effective_from=date(2026, 2, 1),
+            actor_id="user-10",
+        )
+    )
+    after = datetime.now(UTC)
+
+    assert_utc_audit(
+        created_at=created_unit.created_at,
+        created_by=created_unit.created_by,
+        actor_id="user-10",
+        before=before,
+        after=after,
+    )
+    assert uow.commits == 1
+
+
+@pytest.mark.asyncio
+async def test_create_position_stamps_bounded_utc_audit_metadata() -> None:
+    uow = FakeUnitOfWork(
+        hr_organization=FakeHROrganizationRepository(
+            position=Position(
+                id=99,
+                tenant_id="tenant-a",
+                organizational_unit_id=20,
+                code="P-99",
+                title="Placeholder",
+                effective_from=date(2026, 1, 1),
+            ),
+            units=[
+                OrganizationalUnit(
+                    id=20,
+                    tenant_id="tenant-a",
+                    name="Finance",
+                    effective_from=date(2026, 1, 1),
+                )
+            ],
+        ),
+        accounting_cost_centers=FakeAccountingCostCenters(results={}),
+    )
+    service = OrganizationApplicationService(cast(OrganizationUnitOfWork, uow))
+
+    before = datetime.now(UTC)
+    created_position = await service.create_position(
+        CreatePositionCommand(
+            tenant_id="tenant-a",
+            position_id=30,
+            organizational_unit_id=20,
+            code="P-30",
+            title="Treasury Analyst",
+            effective_from=date(2026, 2, 1),
+            actor_id="user-10",
+        )
+    )
+    after = datetime.now(UTC)
+
+    assert_utc_audit(
+        created_at=created_position.created_at,
+        created_by=created_position.created_by,
+        actor_id="user-10",
+        before=before,
+        after=after,
+    )
+    assert uow.commits == 1
+
+
+@pytest.mark.asyncio
+async def test_set_superior_position_stamps_bounded_utc_audit_metadata() -> None:
+    uow = FakeUnitOfWork(
+        hr_organization=FakeHROrganizationRepository(
+            position=Position(
+                id=30,
+                tenant_id="tenant-a",
+                organizational_unit_id=20,
+                code="P-30",
+                title="Treasury Analyst",
+                effective_from=date(2026, 1, 1),
+            ),
+            positions=[
+                Position(
+                    id=99,
+                    tenant_id="tenant-a",
+                    organizational_unit_id=20,
+                    code="P-99",
+                    title="Finance Director",
+                    effective_from=date(2026, 1, 1),
+                )
+            ],
+        ),
+        accounting_cost_centers=FakeAccountingCostCenters(results={}),
+    )
+    service = OrganizationApplicationService(cast(OrganizationUnitOfWork, uow))
+
+    before = datetime.now(UTC)
+    reporting_line = await service.set_superior_position(
+        SetSuperiorPositionCommand(
+            tenant_id="tenant-a",
+            position_id=30,
+            superior_position_id=99,
+            effective_from=date(2026, 2, 1),
+            actor_id="user-10",
+        )
+    )
+    after = datetime.now(UTC)
+
+    assert_utc_audit(
+        created_at=reporting_line.created_at,
+        created_by=reporting_line.created_by,
+        actor_id="user-10",
+        before=before,
+        after=after,
+    )
+    assert uow.commits == 1
+
+
+@pytest.mark.asyncio
+async def test_assign_position_stamps_bounded_utc_audit_metadata() -> None:
+    uow = FakeUnitOfWork(
+        hr_organization=FakeHROrganizationRepository(
+            position=Position(
+                id=30,
+                tenant_id="tenant-a",
+                organizational_unit_id=20,
+                code="P-30",
+                title="Treasury Analyst",
+                effective_from=date(2026, 1, 1),
+            )
+        ),
+        accounting_cost_centers=FakeAccountingCostCenters(results={}),
+    )
+    service = OrganizationApplicationService(cast(OrganizationUnitOfWork, uow))
+
+    before = datetime.now(UTC)
+    assignment = await service.assign_position(
+        AssignPositionCommand(
+            tenant_id="tenant-a",
+            position_id=30,
+            employee_id=100,
+            person_id=None,
+            contract_id=500,
+            effective_from=date(2026, 3, 1),
+            actor_id="user-10",
+        )
+    )
+    after = datetime.now(UTC)
+
+    assert_utc_audit(
+        created_at=assignment.created_at,
+        created_by=assignment.created_by,
+        actor_id="user-10",
+        before=before,
+        after=after,
+    )
+    assert uow.hr_organization.active_assignments == [assignment]
+    assert uow.commits == 1
 
 
 @pytest.mark.asyncio
