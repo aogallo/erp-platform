@@ -14,6 +14,8 @@ DEFAULT_DATABASE_PORT = 5432
 DEFAULT_DATABASE_NAME = "erp_platform_dev"
 DEFAULT_DATABASE_USER = "erp"
 DEFAULT_DATABASE_PASSWORD = "erp_dev_password"
+DEFAULT_AUTH_SESSION_MAX_AGE_MINUTES = 480
+DEFAULT_AUTH_SESSION_IDLE_TIMEOUT_MINUTES = 60
 
 
 class Settings(BaseSettings):
@@ -34,6 +36,12 @@ class Settings(BaseSettings):
     database_name: str = DEFAULT_DATABASE_NAME
     database_user: str = DEFAULT_DATABASE_USER
     database_password: str = DEFAULT_DATABASE_PASSWORD
+    auth_issuer: str = ""
+    auth_audience: str = ""
+    auth_jwks_url: str = ""
+    auth_session_max_age_minutes: int = DEFAULT_AUTH_SESSION_MAX_AGE_MINUTES
+    auth_session_idle_timeout_minutes: int = DEFAULT_AUTH_SESSION_IDLE_TIMEOUT_MINUTES
+    auth_session_revocation_required: bool = True
 
     @classmethod
     def from_env(cls) -> Settings:
