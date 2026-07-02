@@ -1,5 +1,9 @@
 # IAM Specification
 
+## Purpose
+
+IAM defines tenant identity, authentication provider boundaries, local authorization, session policy, RBAC, tenant isolation, and auditability for ERP access control.
+
 ## Requirements
 
 ### Requirement: Tenant Management
@@ -26,25 +30,41 @@ The system MUST maintain tenants as the isolation boundary for all bounded conte
 
 ### Requirement: Users and Authentication Provider Boundary
 
-The system MUST maintain tenant-scoped user identities and authenticate them through a self-hosted, swappable provider adapter. `fastapi-fullauth` MAY be the first provider candidate, but provider SDK details MUST stay behind IAM infrastructure adapters and MUST NOT leak into domain objects or other bounded contexts. A user SHALL include stable user ID, tenant, username or email, status, provider subject reference, and UTC audit timestamps.
+The system MUST maintain tenant-scoped user identities and authenticate them through a provider-neutral OIDC boundary. Auth0 SHALL be first candidate. Provider SDK details MUST stay behind IAM infrastructure adapters and MUST NOT leak into domain objects or other contexts. A user SHALL include stable user ID, tenant, username or email, status, provider subject reference, and UTC audit timestamps.
 
-#### Scenario: Register user through provider port
+#### Scenario: Register user through provider contract
 
 - GIVEN tenant A is active
-- WHEN an authorized IAM workflow registers user "admin@acme.test"
-- THEN IAM creates the user through the authentication provider port and stores only the provider subject reference
+- WHEN an authorized IAM workflow provisions `admin@acme.test`
+- THEN IAM stores only the local user, tenant assignment, and provider subject reference
 
 #### Scenario: Provider swap preserves domain contract
 
-- GIVEN IAM is configured to use a different self-hosted provider adapter
+- GIVEN IAM uses a different OIDC provider adapter
 - WHEN a user authenticates successfully
-- THEN IAM returns the same principal, tenant, and permission contract to downstream contexts
+- THEN IAM returns the same principal, tenant, and permission contract
 
 #### Scenario: Disabled user cannot authenticate
 
 - GIVEN user U-10 is disabled
-- WHEN U-10 submits valid credentials
-- THEN IAM rejects the login and no session is created
+- WHEN U-10 presents valid provider credentials or tokens
+- THEN IAM rejects access and no ERP session is issued
+
+### Requirement: Explicit Access Provisioning
+
+IAM MUST allow access only through invitation or explicit admin/security assignment. Public self-registration MUST NOT create ERP access. Tenant membership SHALL be explicit; email domains MUST NOT grant access.
+
+#### Scenario: Invite user into tenant
+
+- GIVEN tenant A is active and an IAM admin invites `user@acme.test`
+- WHEN the invite is accepted through provider login
+- THEN IAM links the user only to the configured tenant membership
+
+#### Scenario: Email domain does not imply tenant access
+
+- GIVEN tenant A uses `acme.test` as an institutional domain
+- WHEN `person@acme.test` authenticates without explicit tenant membership
+- THEN IAM rejects access for tenant A
 
 ### Requirement: Roles and Permissions
 
@@ -70,13 +90,13 @@ The system MUST maintain tenant-scoped roles and permissions for RBAC authorizat
 
 ### Requirement: Sessions and Principal Claims
 
-IAM MUST issue and validate authentication sessions through the provider boundary. A session or token validation result SHALL produce a principal contract containing user ID, tenant ID, permission set or permission lookup reference, issued_at UTC timestamp, expires_at UTC timestamp, and session status. Sessions MUST be revocable and expired sessions MUST NOT authorize requests.
+IAM MUST validate provider access tokens and local session policy. Frontend clients SHALL obtain an ERP API audience access token using Authorization Code + PKCE and send `Authorization: Bearer <access_token>`. Validation SHALL check issuer, audience, signature, and expiry, then resolve the validated subject to a local ERP Principal through explicit tenant membership or a local lookup reference. Permissions MUST come only from IAM state, never from provider token claims.
 
 #### Scenario: Start authenticated session
 
-- GIVEN active tenant A and active user U-10 with valid credentials
-- WHEN U-10 logs in
-- THEN IAM creates a session and returns principal claims with tenant A scope and UTC expiration
+- GIVEN active tenant A and active user U-10 with tenant membership
+- WHEN U-10 completes Authorization Code + PKCE for the ERP API audience
+- THEN IAM validates the access token subject and returns a local ERP Principal with tenant A membership and permissions from IAM state
 
 #### Scenario: Expired session rejected
 
@@ -86,9 +106,31 @@ IAM MUST issue and validate authentication sessions through the provider boundar
 
 #### Scenario: Revoked session rejected
 
-- GIVEN session S-11 was revoked by an authorized IAM user
+- GIVEN session S-11 was revoked locally by an authorized IAM user
 - WHEN S-11 is used for an API request
-- THEN IAM rejects the request even if the token has not reached its original expiration
+- THEN IAM rejects the request even if the provider token has not expired
+
+### Requirement: Local Authorization and Revocation Ownership
+
+IAM MUST keep ERP roles, permissions, tenant memberships, user status, sessions, and authorization decisions local. Provider claims SHALL identify the subject but MUST NOT source ERP permissions. Local revocation MUST take effect immediately.
+
+#### Scenario: Provider role claim ignored for ERP permission
+
+- GIVEN a valid provider token includes role `admin`
+- WHEN the principal is built for tenant A
+- THEN IAM grants only locally stored permissions for that user and tenant
+
+#### Scenario: Permission removed locally
+
+- GIVEN U-10 no longer has `sales.invoice.post` locally
+- WHEN U-10 calls the Sales posting endpoint with a valid token
+- THEN authorization fails before Sales records side effects
+
+#### Scenario: Disabled local user with valid token
+
+- GIVEN user U-10 is disabled locally after receiving a valid provider token
+- WHEN U-10 uses the token for an API request
+- THEN IAM rejects it immediately
 
 ### Requirement: RBAC Checks for Bounded Contexts
 

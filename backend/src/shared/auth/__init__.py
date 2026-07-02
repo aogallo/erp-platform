@@ -1,4 +1,19 @@
-"""Authentication and authorization port exports."""
+"""Authentication and authorization contract exports."""
 
-from shared.auth.ports import AuthProvider, Principal
-__all__ = ["AuthProvider", "Principal"]
+from shared.auth.contracts import (
+    AuthProvider,
+    Principal,
+    SessionStatus,
+    TokenValidationResult,
+    ensure_utc,
+    require_permission,
+)
+
+__all__ = [
+    "AuthProvider",
+    "Principal",
+    "SessionStatus",
+    "TokenValidationResult",
+    "ensure_utc",
+    "require_permission",
+]
