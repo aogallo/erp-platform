@@ -90,13 +90,13 @@ The system MUST maintain tenant-scoped roles and permissions for RBAC authorizat
 
 ### Requirement: Sessions and Principal Claims
 
-IAM MUST validate provider access tokens and local session policy. Frontend clients SHALL obtain an ERP API audience access token using Authorization Code + PKCE and send `Authorization: Bearer <access_token>`. Validation SHALL check issuer, audience, signature, and expiry, then map claims to an ERP Principal with user ID, tenant ID, permissions or lookup reference, UTC issue/expiry timestamps, and session status.
+IAM MUST validate provider access tokens and local session policy. Frontend clients SHALL obtain an ERP API audience access token using Authorization Code + PKCE and send `Authorization: Bearer <access_token>`. Validation SHALL check issuer, audience, signature, and expiry, then resolve the validated subject to a local ERP Principal through explicit tenant membership or a local lookup reference. Permissions MUST come only from IAM state, never from provider token claims.
 
 #### Scenario: Start authenticated session
 
 - GIVEN active tenant A and active user U-10 with tenant membership
 - WHEN U-10 completes Authorization Code + PKCE for the ERP API audience
-- THEN IAM validates the access token and returns principal claims with tenant A scope
+- THEN IAM validates the access token subject and returns a local ERP Principal with tenant A membership and permissions from IAM state
 
 #### Scenario: Expired session rejected
 
