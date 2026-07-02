@@ -5,6 +5,7 @@ from shared.auth.contracts import (
     Principal,
     SessionStatus,
     TokenValidationResult,
+    ensure_utc,
     require_permission,
 )
 
@@ -13,5 +14,6 @@ __all__ = [
     "Principal",
     "SessionStatus",
     "TokenValidationResult",
+    "ensure_utc",
     "require_permission",
 ]

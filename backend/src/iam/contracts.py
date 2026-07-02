@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from enum import StrEnum
 
-from shared.auth.contracts import SessionStatus
+from shared.auth.contracts import SessionStatus, ensure_utc
 
 
 class UserStatus(StrEnum):
@@ -56,6 +56,9 @@ class LocalSession:
     user_id: str
     status: SessionStatus
     expires_at: datetime
+
+    def __post_init__(self) -> None:
+        ensure_utc(self.expires_at, "expires_at")
 
 
 @dataclass(frozen=True)

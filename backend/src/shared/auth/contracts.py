@@ -17,7 +17,9 @@ class SessionStatus(StrEnum):
     DISABLED = "disabled"
 
 
-def _ensure_utc(value: datetime, field_name: str) -> None:
+def ensure_utc(value: datetime, field_name: str) -> None:
+    """Raise ValueError when a datetime is not timezone-aware UTC."""
+
     if value.tzinfo is not UTC:
         raise ValueError(f"{field_name} must be timezone-aware UTC")
 
@@ -39,8 +41,8 @@ class TokenValidationResult:
     claims: dict[str, Any] = field(default_factory=_empty_claims)
 
     def __post_init__(self) -> None:
-        _ensure_utc(self.issued_at, "issued_at")
-        _ensure_utc(self.expires_at, "expires_at")
+        ensure_utc(self.issued_at, "issued_at")
+        ensure_utc(self.expires_at, "expires_at")
 
 
 @dataclass(frozen=True)
@@ -58,8 +60,8 @@ class Principal:
     session_id: str | None = None
 
     def __post_init__(self) -> None:
-        _ensure_utc(self.issued_at, "issued_at")
-        _ensure_utc(self.expires_at, "expires_at")
+        ensure_utc(self.issued_at, "issued_at")
+        ensure_utc(self.expires_at, "expires_at")
 
 
 class AuthProvider(Protocol):

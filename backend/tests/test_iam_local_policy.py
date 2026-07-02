@@ -105,6 +105,16 @@ def make_repository(
     )
 
 
+def test_local_session_requires_utc_expiry() -> None:
+    with pytest.raises(ValueError, match="expires_at must be timezone-aware UTC"):
+        LocalSession(
+            session_id="session-10",
+            user_id="user-10",
+            status=SessionStatus.ACTIVE,
+            expires_at=datetime(2026, 7, 1, 12, 0),
+        )
+
+
 @pytest.mark.asyncio
 async def test_local_policy_requires_explicit_tenant_membership() -> None:
     repository = make_repository(membership_active=False)
