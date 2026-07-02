@@ -1,8 +1,8 @@
 import type { AxiosAdapter, AxiosInstance } from 'axios'
 
-import { createAxiosClient } from '../../../lib/axiosClient'
-import { authTokenStorage } from './tokenStorage'
-import type { TokenStorage } from '../types'
+import { createAxiosClient } from './axiosClient'
+import { authTokenStorage } from '../features/iam/api/tokenStorage'
+import type { TokenStorage } from '../features/iam/types'
 
 export type ApiClientOptions = {
   adapter?: AxiosAdapter

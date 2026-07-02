@@ -2,16 +2,15 @@ import { describe, expect, it } from 'vitest'
 
 import {
   AUTH0_PKCE_RESPONSE_TYPE,
-  axiosClient,
   buildAuth0PkceLoginUrl,
-  createApiClient,
-  createAxiosClient,
   createPkceCodeChallenge,
   createAuthorizationHeader,
   createAuthenticatedRequestInit,
   createMemoryTokenStorage,
   storedTokenSchema,
 } from './index'
+import { createApiClient } from '../../lib/apiClient'
+import { axiosClient, createAxiosClient } from '../../lib/axiosClient'
 
 function getConfigHeader(headers: unknown, name: string): unknown {
   if (headers === null || typeof headers !== 'object') {
