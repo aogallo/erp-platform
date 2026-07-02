@@ -32,6 +32,10 @@ class LocalIamPolicyService:
         if user.status is UserStatus.DISABLED:
             raise PermissionError("Local user is disabled")
 
+        tenant = await self._repository.get_tenant(tenant_id)
+        if tenant is None or not tenant.active:
+            raise PermissionError("Tenant is not active")
+
         membership = await self._repository.get_tenant_membership(
             user_id=user.user_id, tenant_id=tenant_id
         )

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Protocol
 
-from iam.contracts import LocalSession, LocalUser, TenantMembership
+from iam.contracts import LocalSession, LocalUser, Tenant, TenantMembership
 
 
 class IamPolicyRepository(Protocol):
@@ -14,6 +14,9 @@ class IamPolicyRepository(Protocol):
         self, provider_subject: str
     ) -> LocalUser | None:
         """Return the local user linked to the verified provider subject."""
+
+    async def get_tenant(self, tenant_id: str) -> Tenant | None:
+        """Return the tenant for local activation checks."""
 
     async def get_tenant_membership(
         self, *, user_id: str, tenant_id: str

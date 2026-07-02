@@ -5,7 +5,7 @@ from typing import Any
 
 import pytest
 
-from iam.contracts import LocalSession, LocalUser, TenantMembership, UserStatus
+from iam.contracts import LocalSession, LocalUser, Tenant, TenantMembership, UserStatus
 from iam.services.local_policy import LocalIamPolicyService
 from shared.auth.contracts import SessionStatus, TokenValidationResult
 
@@ -14,11 +14,13 @@ class InMemoryIamRepository:
     def __init__(
         self,
         *,
+        tenant: Tenant,
         user: LocalUser,
         membership: TenantMembership | None,
         session: LocalSession,
         permissions: frozenset[str],
     ) -> None:
+        self.tenant = tenant
         self.user = user
         self.membership = membership
         self.session = session
@@ -29,6 +31,11 @@ class InMemoryIamRepository:
     ) -> LocalUser | None:
         if provider_subject == self.user.provider_subject:
             return self.user
+        return None
+
+    async def get_tenant(self, tenant_id: str) -> Tenant | None:
+        if tenant_id == self.tenant.tenant_id:
+            return self.tenant
         return None
 
     async def get_tenant_membership(
@@ -77,6 +84,7 @@ def make_token(
 
 def make_repository(
     *,
+    tenant_active: bool = True,
     user_status: UserStatus = UserStatus.ACTIVE,
     membership_active: bool = True,
     session_status: SessionStatus = SessionStatus.ACTIVE,
@@ -84,6 +92,7 @@ def make_repository(
 ) -> InMemoryIamRepository:
     issued_at = datetime(2026, 7, 1, 12, 0, tzinfo=UTC)
     return InMemoryIamRepository(
+        tenant=Tenant(tenant_id="tenant-a", active=tenant_active),
         user=LocalUser(
             user_id="user-10",
             provider_subject="auth0|subject-10",
@@ -112,6 +121,17 @@ def test_local_session_requires_utc_expiry() -> None:
             user_id="user-10",
             status=SessionStatus.ACTIVE,
             expires_at=datetime(2026, 7, 1, 12, 0),
+        )
+
+
+@pytest.mark.asyncio
+async def test_local_policy_rejects_inactive_tenants_before_membership() -> None:
+    repository = make_repository(tenant_active=False)
+    service = LocalIamPolicyService(repository=repository)
+
+    with pytest.raises(PermissionError, match="Tenant is not active"):
+        await service.build_principal(
+            token=make_token(), tenant_id="tenant-a", session_id="session-10"
         )
 
 
