@@ -3,7 +3,7 @@ import type { Auth0PkceConfig, PkceLoginDependencies, PkceLoginRequest } from '.
 export const AUTH0_PKCE_RESPONSE_TYPE = 'code'
 
 function normalizeAuth0Domain(domain: string): string {
-  return domain.replace(/^https:\/\//, '').replace(/\/$/, '')
+  return domain.replace(/^https?:\/\//i, '').replace(/\/$/, '')
 }
 
 function base64UrlEncode(bytes: Uint8Array): string {

@@ -83,6 +83,26 @@ describe('IAM Auth0 PKCE boundary', () => {
     )
   })
 
+  it('normalizes HTTP scheme and scheme casing before building the hosted login URL', async () => {
+    const url = await buildAuth0PkceLoginUrl(
+      {
+        audience: 'erp-api',
+        clientId: 'client-1',
+        domain: 'HTTP://tenant.auth0.com/',
+        redirectUri: 'https://erp.test/callback',
+        scopes: ['openid'],
+      },
+      {
+        createCodeChallenge: async () => 'challenge-1',
+        createCodeVerifier: () => 'verifier-1',
+        createState: () => 'state-1',
+      },
+    )
+
+    expect(url.authorizationUrl.origin).toBe('https://tenant.auth0.com')
+    expect(url.authorizationUrl.pathname).toBe('/authorize')
+  })
+
   it('creates the RFC 7636 S256 code challenge from a verifier', async () => {
     const challenge = await createPkceCodeChallenge(
       'dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk',
