@@ -58,6 +58,22 @@ def test_backend_settings_read_postgres_environment(monkeypatch: MonkeyPatch) ->
     assert get_settings().app_name == "ERP Platform API"
 
 
+def test_backend_settings_expose_async_sqlalchemy_database_url(
+    monkeypatch: MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("ERP_DATABASE_HOST", "async-db")
+    monkeypatch.setenv("ERP_DATABASE_PORT", "6543")
+    monkeypatch.setenv("ERP_DATABASE_NAME", "erp_async")
+    monkeypatch.setenv("ERP_DATABASE_USER", "async_user")
+    monkeypatch.setenv("ERP_DATABASE_PASSWORD", "async_secret")
+
+    settings = Settings.from_env()
+
+    assert settings.sqlalchemy_async_database_url == (
+        "postgresql+psycopg://async_user:async_secret@async-db:6543/erp_async"
+    )
+
+
 def test_backend_settings_load_dotenv_file(
     tmp_path: Path, monkeypatch: MonkeyPatch
 ) -> None:

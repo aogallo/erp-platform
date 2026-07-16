@@ -51,6 +51,11 @@ class Settings(BaseSettings):
     @property
     def database_url(self) -> str:
         """Return the SQLAlchemy-compatible PostgreSQL connection URL."""
+        return self.sqlalchemy_async_database_url
+
+    @property
+    def sqlalchemy_async_database_url(self) -> str:
+        """Return the async SQLAlchemy PostgreSQL connection URL."""
         return (
             "postgresql+psycopg://"
             f"{self.database_user}:{self.database_password}"
