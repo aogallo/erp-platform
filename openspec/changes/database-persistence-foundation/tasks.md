@@ -40,11 +40,11 @@ Chain strategy: feature-branch-chain
 
 ## Phase 3: Unit of Work Transaction Boundary
 
-- [ ] 3.1 RED: Add async tests proving `SqlAlchemyUnitOfWork` commits once on `commit()` and rolls back uncommitted work on exception.
-- [ ] 3.2 RED: Add a focused static test that repository files under `backend/src/**/repositories/` do not call `session.commit()`.
-- [ ] 3.3 GREEN: Create `backend/src/shared/uow/contracts.py` re-exporting existing `UnitOfWork` protocols from `ports.py` for compatibility; do not add new `ports.py` files.
-- [ ] 3.4 GREEN: Create `backend/src/shared/uow/sqlalchemy.py` with concrete async UoW using `async_sessionmaker[AsyncSession]`; update `backend/src/shared/uow/__init__.py` exports.
-- [ ] 3.5 REFACTOR: Ensure controllers/services/repositories retain UoW-owned commit/rollback and no raw commits outside the UoW boundary.
+- [x] 3.1 RED: Add async tests proving `SqlAlchemyUnitOfWork` commits once on `commit()` and rolls back uncommitted work on exception.
+- [x] 3.2 RED: Add a focused static test that repository files under `backend/src/**/repositories/` do not call `session.commit()`.
+- [x] 3.3 GREEN: Create `backend/src/shared/uow/contracts.py` re-exporting existing `UnitOfWork` protocols from `ports.py` for compatibility; do not add new `ports.py` files.
+- [x] 3.4 GREEN: Create `backend/src/shared/uow/sqlalchemy.py` with concrete async UoW using `async_sessionmaker[AsyncSession]`; update `backend/src/shared/uow/__init__.py` exports.
+- [x] 3.5 REFACTOR: Ensure controllers/services/repositories retain UoW-owned commit/rollback and no raw commits outside the UoW boundary.
 
 ## Phase 4: Verification
 
