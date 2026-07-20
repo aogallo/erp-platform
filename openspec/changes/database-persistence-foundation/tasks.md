@@ -34,9 +34,9 @@ Chain strategy: feature-branch-chain
 
 ## Phase 2: SQLAlchemy Foundation
 
-- [ ] 2.1 RED: Add tests for `backend/src/shared/db/sqlalchemy.py` metadata naming conventions, declarative `Base`, async engine creation, and `async_sessionmaker` wiring.
-- [ ] 2.2 GREEN: Add SQLAlchemy to `pyproject.toml` and create `backend/src/shared/db/__init__.py`, `backend/src/shared/db/settings.py` if needed, and `backend/src/shared/db/sqlalchemy.py`.
-- [ ] 2.3 REFACTOR: Keep migrations as source of truth; document future context model location in module docstrings only if needed.
+- [x] 2.1 RED: Add tests for `backend/src/shared/db/sqlalchemy.py` metadata naming conventions, declarative `Base`, async engine creation, and `async_sessionmaker` wiring.
+- [x] 2.2 GREEN: Add SQLAlchemy to `pyproject.toml` and create `backend/src/shared/db/__init__.py`, `backend/src/shared/db/settings.py` if needed, and `backend/src/shared/db/sqlalchemy.py`.
+- [x] 2.3 REFACTOR: Keep migrations as source of truth; document future context model location in module docstrings only if needed.
 
 ## Phase 3: Unit of Work Transaction Boundary
 
