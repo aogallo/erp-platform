@@ -24,7 +24,7 @@ The system MUST allow creating invoices in "draft" status. A draft SHALL require
 
 ### Requirement: Invoice Posting
 
-The system MUST allow posting a draft invoice to "posted_pending_fel" status. Posting SHALL trigger a local Unit of Work that atomically: records the invoice, deducts inventory, creates the accounting entry, and enqueues a FEL authorization request. External FEL authorization SHALL run asynchronously and MUST NOT roll back the local posting after it commits.
+The system MUST allow posting a draft invoice to "posted_pending_fel" status. Posting SHALL trigger a local transaction manager that atomically: records the invoice, deducts inventory, creates the accounting entry, and enqueues a FEL authorization request. External FEL authorization SHALL run asynchronously and MUST NOT roll back the local posting after it commits.
 
 #### Scenario: Post invoice enqueues FEL authorization
 

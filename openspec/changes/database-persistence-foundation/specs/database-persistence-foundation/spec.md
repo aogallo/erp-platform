@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Define the persistence baseline for PostgreSQL, Flyway, SQLAlchemy, and Unit of Work behavior before business tables are introduced.
+Define the persistence baseline for PostgreSQL, Flyway, SQLAlchemy, and transaction-manager behavior before business tables are introduced.
 
 ## Requirements
 
@@ -73,19 +73,19 @@ Tenant-scoped tables MUST include `tenant_id`. Tenantless tables MAY exist only 
 - THEN no application table has RLS enabled by this slice
 - AND conventions remain compatible with enabling RLS later
 
-### Requirement: Async SQLAlchemy and Unit of Work Boundary
+### Requirement: Async SQLAlchemy and Transaction Boundary
 
-The system MUST provide shared async SQLAlchemy engine/session infrastructure. Unit of Work MUST own transaction commit and rollback boundaries; controllers, services outside the UoW boundary, and repositories MUST NOT call raw session commits.
+The system MUST provide shared async SQLAlchemy engine/session infrastructure. A transaction manager MUST own transaction commit and rollback boundaries; controllers, services outside the transaction boundary, and repositories MUST NOT call raw session commits.
 
-#### Scenario: Successful UoW commits once
+#### Scenario: Successful transaction manager commits once
 
 - GIVEN an application service completes local persistence work through repositories
-- WHEN the Unit of Work commits
-- THEN all local changes are committed through the UoW transaction boundary
+- WHEN the transaction manager commits
+- THEN all local changes are committed through the managed transaction boundary
 
 #### Scenario: Repository raw commit prohibited
 
 - GIVEN repository code receives a SQLAlchemy session
 - WHEN it persists or reads data
 - THEN it MUST NOT call `session.commit()` directly
-- AND rollback behavior remains owned by the Unit of Work
+- AND rollback behavior remains owned by the transaction manager

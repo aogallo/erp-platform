@@ -10,7 +10,7 @@ class OutboxRepository(Protocol):
     """Persistence port for outbox events."""
 
     async def add(self, event: OutboxEvent) -> OutboxEvent:
-        """Persist an event in the current Unit of Work transaction."""
+        """Persist an event in the current local transaction."""
 
     async def get_pending(self, *, limit: int = 100) -> list[OutboxEvent]:
         """Return pending events for an asynchronous worker."""

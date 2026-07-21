@@ -7,7 +7,7 @@ from typing import cast
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
-from shared.uow.sqlalchemy import SqlAlchemyUnitOfWork
+from shared.transactions.sqlalchemy import SqlAlchemyTransactionManager
 
 
 class FakeAsyncSession:
@@ -36,23 +36,23 @@ class FakeAsyncSessionMaker:
         return self.session
 
 
-def make_uow(
+def make_transaction_manager(
     sessionmaker: Callable[[], FakeAsyncSession],
-) -> SqlAlchemyUnitOfWork:
-    return SqlAlchemyUnitOfWork(
+) -> SqlAlchemyTransactionManager:
+    return SqlAlchemyTransactionManager(
         cast(async_sessionmaker[AsyncSession], sessionmaker)
     )
 
 
 @pytest.mark.asyncio
-async def test_sqlalchemy_unit_of_work_commits_session_once_on_commit() -> None:
+async def test_sqlalchemy_transaction_manager_commits_session_once_on_commit() -> None:
     session = FakeAsyncSession()
     sessionmaker = FakeAsyncSessionMaker(session)
-    uow = make_uow(sessionmaker)
+    transaction_manager = make_transaction_manager(sessionmaker)
 
-    async with uow as opened_uow:
-        assert opened_uow is uow
-        await opened_uow.commit()
+    async with transaction_manager as opened_transaction_manager:
+        assert opened_transaction_manager is transaction_manager
+        await opened_transaction_manager.commit()
 
     assert sessionmaker.calls == 1
     assert session.commits == 1
@@ -61,13 +61,13 @@ async def test_sqlalchemy_unit_of_work_commits_session_once_on_commit() -> None:
 
 
 @pytest.mark.asyncio
-async def test_sqlalchemy_unit_of_work_rolls_back_on_exception() -> None:
+async def test_sqlalchemy_transaction_manager_rolls_back_on_exception() -> None:
     session = FakeAsyncSession()
     sessionmaker = FakeAsyncSessionMaker(session)
-    uow = make_uow(sessionmaker)
+    transaction_manager = make_transaction_manager(sessionmaker)
 
     with pytest.raises(RuntimeError, match="application failure"):
-        async with uow:
+        async with transaction_manager:
             raise RuntimeError("application failure")
 
     assert sessionmaker.calls == 1

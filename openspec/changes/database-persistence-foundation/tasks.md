@@ -7,7 +7,7 @@
 | Estimated changed lines | 450-650 |
 | 400-line budget risk | High |
 | Chained PRs recommended | Yes |
-| Suggested split | PR 1 migrations/config → PR 2 SQLAlchemy foundation → PR 3 UoW behavior/static guard |
+| Suggested split | PR 1 migrations/config → PR 2 SQLAlchemy foundation → PR 3 transaction-manager behavior/static guard |
 | Delivery strategy | ask-on-risk |
 | Chain strategy | feature-branch-chain |
 
@@ -22,7 +22,7 @@ Chain strategy: feature-branch-chain
 |------|------|-----------|-------|
 | 1 | Flyway baseline and database settings | PR 1 | Includes migration/config tests; no business tables. |
 | 2 | SQLAlchemy async metadata/session foundation | PR 2 | Depends on PR 1 settings; includes metadata/session tests. |
-| 3 | Concrete SQLAlchemy UoW boundary | PR 3 | Depends on PR 2; includes commit/rollback and raw-commit guard tests. |
+| 3 | Concrete SQLAlchemy transaction boundary | PR 3 | Depends on PR 2; includes commit/rollback and raw-commit guard tests. |
 
 ## Phase 1: Flyway Baseline and Settings
 
@@ -38,15 +38,15 @@ Chain strategy: feature-branch-chain
 - [x] 2.2 GREEN: Add SQLAlchemy to `pyproject.toml` and create `backend/src/shared/db/__init__.py`, `backend/src/shared/db/settings.py` if needed, and `backend/src/shared/db/sqlalchemy.py`.
 - [x] 2.3 REFACTOR: Keep migrations as source of truth; document future context model location in module docstrings only if needed.
 
-## Phase 3: Unit of Work Transaction Boundary
+## Phase 3: Transaction-Manager Boundary
 
-- [x] 3.1 RED: Add async tests proving `SqlAlchemyUnitOfWork` commits once on `commit()` and rolls back uncommitted work on exception.
+- [x] 3.1 RED: Add async tests proving `SqlAlchemyTransactionManager` commits once on `commit()` and rolls back uncommitted work on exception.
 - [x] 3.2 RED: Add a focused static test that repository files under `backend/src/**/repositories/` do not call `session.commit()`.
-- [x] 3.3 GREEN: Create `backend/src/shared/uow/contracts.py` re-exporting existing `UnitOfWork` protocols from `ports.py` for compatibility; do not add new `ports.py` files.
-- [x] 3.4 GREEN: Create `backend/src/shared/uow/sqlalchemy.py` with concrete async UoW using `async_sessionmaker[AsyncSession]`; update `backend/src/shared/uow/__init__.py` exports.
-- [x] 3.5 REFACTOR: Ensure controllers/services/repositories retain UoW-owned commit/rollback and no raw commits outside the UoW boundary.
+- [x] 3.3 GREEN: Create `backend/src/shared/transactions/contracts.py` re-exporting existing transaction-manager protocols from `ports.py` for compatibility; do not add new `ports.py` files outside this package.
+- [x] 3.4 GREEN: Create `backend/src/shared/transactions/sqlalchemy.py` with concrete async transaction manager using `async_sessionmaker[AsyncSession]`; update `backend/src/shared/transactions/__init__.py` exports.
+- [x] 3.5 REFACTOR: Ensure controllers/services/repositories retain transaction-manager-owned commit/rollback and no raw commits outside the transaction boundary.
 
 ## Phase 4: Verification
 
-- [ ] 4.1 Run `uv run pytest` and fix failures in the same work unit that introduced them.
-- [ ] 4.2 Confirm no business tables, seed data, schema-per-tenant isolation, or enabled RLS policies were added.
+- [x] 4.1 Run `uv run pytest` and fix failures in the same work unit that introduced them.
+- [x] 4.2 Confirm no business tables, seed data, schema-per-tenant isolation, or enabled RLS policies were added.

@@ -35,7 +35,7 @@ def create_engine(database_url: str, *, echo: bool = False) -> AsyncEngine:
 def create_async_sessionmaker(
     engine: AsyncEngine,
 ) -> async_sessionmaker[AsyncSession]:
-    """Create the async session factory used by Unit of Work implementations."""
+    """Create the async session factory used by transaction managers."""
     return async_sessionmaker(
         bind=engine,
         autoflush=False,

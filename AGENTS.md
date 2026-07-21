@@ -8,7 +8,7 @@ Read these before designing or implementing features:
 
 - `docs/bounded-context.md` — canonical bounded context map.
 - `docs/coding-standards.md` — Python/FastAPI and React/TypeScript conventions.
-- `docs/cross-cutting/*.md` — shared contracts for Unit of Work, auth, FEL, logging, errors, and multi-tenancy.
+- `docs/cross-cutting/*.md` — shared contracts for transactions, auth, FEL, logging, errors, and multi-tenancy.
 - `openspec/specs/` — canonical behavior specs.
 
 ## Stack
@@ -25,7 +25,7 @@ Read these before designing or implementing features:
 - Use Hexagonal Architecture + DDD by bounded-context feature folders.
 - Use Repository Pattern for persistence access.
 - Use Service Layer for application orchestration and business workflows.
-- Use Unit of Work for transactions; do not call `session.commit()` directly from controllers/services outside the UoW boundary.
+- Use transaction managers for local transactions; do not call `session.commit()` directly from controllers/services outside the transaction boundary.
 - Database is the source of truth.
 - Do not generate automatic migrations. Write reviewable SQL migrations.
 - Keep provider SDKs in infrastructure adapters only, never in domain objects.
@@ -48,7 +48,7 @@ backend/src/shared/
   fel/
   logging/
   outbox/
-  uow/
+  transactions/
 ```
 
 ## Frontend Structure

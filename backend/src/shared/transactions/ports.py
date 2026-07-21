@@ -1,4 +1,4 @@
-"""Shared Unit of Work and cross-context coordination ports."""
+"""Shared transaction-manager and cross-context coordination ports."""
 
 from __future__ import annotations
 
@@ -44,9 +44,10 @@ class AccountingCoordinationPort(Protocol):
         """Create reversing entries for a credit note."""
 
 
-class UnitOfWork(Protocol):
+class TransactionManager(Protocol):
     """Transaction boundary for application use cases.
 
+    This is the service-facing name for the Unit of Work pattern.
     Implementations own rollback on failure. Services prepare all local changes
     and outbox records before calling `commit()` exactly once.
     """
@@ -60,8 +61,8 @@ class UnitOfWork(Protocol):
     hr_organization: HROrganizationRepository
     outbox: OutboxRepository
 
-    async def __aenter__(self) -> UnitOfWork:
-        """Open the Unit of Work transaction scope."""
+    async def __aenter__(self) -> TransactionManager:
+        """Open the transaction scope."""
 
     async def __aexit__(
         self,

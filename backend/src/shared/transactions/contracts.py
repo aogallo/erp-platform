@@ -1,17 +1,15 @@
-"""Unit of Work exports."""
+"""Compatibility exports for transaction-manager contracts."""
 
-from shared.uow.contracts import (
+from shared.transactions.ports import (
     AccountingCoordinationPort,
     CustomerLookupPort,
     InventoryCoordinationPort,
-    UnitOfWork,
+    TransactionManager,
 )
-from shared.uow.sqlalchemy import SqlAlchemyUnitOfWork
 
 __all__ = [
     "AccountingCoordinationPort",
     "CustomerLookupPort",
     "InventoryCoordinationPort",
-    "SqlAlchemyUnitOfWork",
-    "UnitOfWork",
+    "TransactionManager",
 ]
