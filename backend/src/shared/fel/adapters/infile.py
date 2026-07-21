@@ -1,7 +1,7 @@
 """Infile FEL adapter skeleton.
 
 The adapter intentionally imports no Infile SDK/API client in this PR. FEL calls
-must be made by asynchronous workers after the invoice Unit of Work commits; the
+must be made by asynchronous workers after the invoice transaction commits; the
 invoice posting service must enqueue outbox events instead of calling this
 adapter synchronously.
 """

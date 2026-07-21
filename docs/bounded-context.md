@@ -76,7 +76,7 @@ Responsibilities:
 - Create quotes
 - Create orders
 - Generate invoices
-- Post invoices through local Unit of Work and asynchronous FEL authorization
+- Post invoices through a local transaction manager and asynchronous FEL authorization
 
 API prefix: `/sales`
 

@@ -9,7 +9,7 @@ refreshed_at: 2026-06-08
 context: |
   Modular ERP platform with FastAPI + PostgreSQL + SQLAlchemy + Flyway backend.
   Frontend: React + TypeScript + Vite with TanStack Query and Zod.
-  Architecture: Hexagonal Architecture + DDD by bounded context, Repository Pattern, Service Layer, Unit of Work.
+  Architecture: Hexagonal Architecture + DDD by bounded context, Repository Pattern, Service Layer, transaction managers.
   Bounded contexts: IAM, CRM, Sales, Inventory, Purchasing, Accounting, Banking, HR.
   Current repo has backend/frontend scaffold code but no dependency manifests or test runner configs yet.
   Strict TDD is the project policy; PR4 is expected to add tests, CI, Flyway, and tooling scaffolding.

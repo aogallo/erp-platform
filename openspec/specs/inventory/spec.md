@@ -80,7 +80,7 @@ The system MUST record every stock change as an immutable, tenant-scoped stock m
 
 ### Requirement: Sales Stock Coordination
 
-Inventory MUST expose application services or ports for Sales to reserve, deduct, and restore stock during invoice and credit-note flows. Sales MUST NOT write Inventory tables directly. Stock deduction for invoice posting MUST be atomic with the local posting workflow coordinated by the application service and Unit of Work boundary.
+Inventory MUST expose application services or ports for Sales to reserve, deduct, and restore stock during invoice and credit-note flows. Sales MUST NOT write Inventory tables directly. Stock deduction for invoice posting MUST be atomic with the local posting workflow coordinated by the application service and transaction-manager boundary.
 
 #### Scenario: Deduct stock for posted invoice
 

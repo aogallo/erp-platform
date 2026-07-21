@@ -26,7 +26,7 @@ backend/src/{context}/
   schemas/        # Pydantic models shared by adapters/application layer
 ```
 
-The domain layer MUST NOT import FastAPI, SQLAlchemy sessions, Pydantic request models, or provider SDKs. Controllers call services; services coordinate repositories through a Unit of Work; repositories own database access.
+The domain layer MUST NOT import FastAPI, SQLAlchemy sessions, Pydantic request models, or provider SDKs. Controllers call services; services coordinate repositories through a transaction manager; repositories own database access.
 
 ## Backend Model Boundaries
 
@@ -63,7 +63,7 @@ Repositories MAY define SQLAlchemy 2.x declarative models in `models.py` and per
 
 - Repository Pattern
 - Service Pattern
-- Unit of Work Pattern
+- Unit of Work pattern through transaction-manager interfaces
 - Dependency Injection
 
 ## Shared Types
@@ -98,9 +98,9 @@ Repositories MAY define SQLAlchemy 2.x declarative models in `models.py` and per
 - Business logic in controllers
 - Direct database access from controllers
 - Circular dependencies
-- Cross-context writes without an application service and Unit of Work boundary
+- Cross-context writes without an application service and transaction-manager boundary
 - Provider SDK calls from domain objects
-- `session.commit()` outside Unit of Work boundaries
+- `session.commit()` outside transaction-manager boundaries
 - `requirements.txt` as the dependency source of truth
 - Returning ORM models directly from controllers
 

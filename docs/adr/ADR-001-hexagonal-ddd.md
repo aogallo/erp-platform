@@ -30,7 +30,7 @@ Controllers are inbound adapters, repositories are outbound adapters, services c
 
 - Domain code remains framework-independent.
 - API routes expose context ownership through prefixes such as `/crm/customers` and `/sales/invoices`.
-- Cross-context workflows require application services and Unit of Work boundaries.
+- Cross-context workflows require application services and transaction-manager boundaries.
 - More upfront structure is required, but it protects long-term modularity.
 
 ## Rollback
